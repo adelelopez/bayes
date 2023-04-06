@@ -114,14 +114,14 @@ impl Component for NumComponent {
     }
 
     fn changed(&mut self, ctx: &yew::Context<Self>) -> bool {
-        if ctx.props().force_value != None {
+        if ctx.props().force_value.is_some() {
             self.value = ctx.props().force_value.unwrap();
         }
         true
     }
 
     fn rendered(&mut self, ctx: &yew::Context<Self>, _first_render: bool) {
-        if ctx.props().force_value != None {
+        if ctx.props().force_value.is_some() {
             self.value = ctx.props().force_value.unwrap();
         }
     }

@@ -699,15 +699,15 @@ function getImports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper3350 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper3351 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 264, __wbg_adapter_22);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper8912 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper8913 = function(arg0, arg1, arg2) {
         const ret = makeClosure(arg0, arg1, 479, __wbg_adapter_25);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper12099 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper12100 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 497, __wbg_adapter_28);
         return addHeapObject(ret);
     };
@@ -747,7 +747,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('bayes-app-85e6c2c6891deb17_bg.wasm', import.meta.url);
+        input = new URL('bayes-app-359b0380dc7a33da_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 

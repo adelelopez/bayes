@@ -61,7 +61,7 @@ impl Component for ChanceComponent {
             1.0
         };
         let init_force = if ctx.props().kind == Kind::Posterior {
-            if ctx.props().force_chance != None {
+            if ctx.props().force_chance.is_some() {
                 ctx.props()
                     .force_chance
                     .clone()
@@ -75,7 +75,7 @@ impl Component for ChanceComponent {
         } else {
             vec![None; length]
         };
-        let init_odds = if ctx.props().force_chance != None {
+        let init_odds = if ctx.props().force_chance.is_some() {
             ctx.props().force_chance.clone().unwrap()
         } else {
             vec![init_val; length]
@@ -198,7 +198,7 @@ impl Component for ChanceComponent {
             self.force_odds.push(Some(1.0));
         }
         for idx in 0..self.force_odds.len() {
-            if self.force_odds[idx] != None {
+            if self.force_odds[idx].is_some() {
                 self.odds[idx] = self.force_odds[idx].unwrap()
             }
         }
@@ -231,7 +231,7 @@ impl Component for ChanceComponent {
                 true
             }
             Msg::AddHypothesis => {
-                if ctx.props().onadd_hypothesis != None {
+                if ctx.props().onadd_hypothesis.is_some() {
                     ctx.props().onadd_hypothesis.clone().unwrap().emit(true);
                 }
                 true

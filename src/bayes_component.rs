@@ -48,7 +48,7 @@ pub fn recalculate_to(prior: Vec<f64>, likelihoods: Vec<Vec<Vec<f64>>>, to: usiz
 
 fn save_data(data: &BayesData) {
     let serialized = serde_json::to_string(&data).unwrap();
-    SessionStorage::set("bayes_component", &serialized).unwrap();
+    SessionStorage::set("bayes_component", serialized).unwrap();
 }
 
 #[derive(Debug)]
