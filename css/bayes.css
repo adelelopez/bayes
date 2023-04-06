@@ -73,9 +73,11 @@ input.hypothesis, input.evidence {
 
 button {
     background: transparent;
+    border-width: 1px;
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 1.2rem;
     color: #333;
+    cursor: pointer;
 }
 
 button.add-hypothesis{
@@ -83,7 +85,7 @@ button.add-hypothesis{
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 4rem;
     padding-bottom: 10px;
-    margin-left: 5px;
+    margin-left: 8px;
 }
 
 button.add-evidence{
@@ -114,14 +116,17 @@ button.no_button{
 }
 
 .prior .percent button{
-    padding-top: 2px;
-    padding-right: 5px;
+    padding-top: 3.3px;
+    padding-bottom: 2px;
+    padding-right: 5.5px;
     cursor: pointer;
+    margin-left: 0.7px;
 
 }
 
 .evidence .percent button{
-    padding-left: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
     padding-top: 2px;
     cursor: pointer;
 
@@ -374,12 +379,12 @@ input.label-input {
 
 .d0 {
     display: grid;
-    grid-template-columns: subgrid;
+    /* grid-template-columns: subgrid; */
 }
 
 .d1 {
     display: grid;
-    grid-template-columns: subgrid;
+    /* grid-template-columns: subgrid; */
 }
 
 
@@ -390,21 +395,21 @@ input.label-input {
 
 .prior {
     display: grid;
-    grid-template-columns: subgrid;
+    grid-template-columns: 400px 400px 200px;
     grid-column: 1/4;
     padding-bottom: 5px;
 }
 
 .evidence {
     display: grid;
-    grid-template-columns: subgrid;
+    grid-template-columns: 400px 400px 200px;
     padding-bottom: 5px;
 }
 
 
 .posterior {
     display: grid;
-    grid-template-columns: subgrid;
+    grid-template-columns: 400px 400px 200px;
     grid-column: 1/4;
 }
 
@@ -441,10 +446,10 @@ input[type=file] {
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 1.2rem;
     color: #333;
-    border-top: 2px solid #999;
-    border-left: 2px solid #888;
-    border-bottom: 2px solid #ddd;
-    border-right: 2px solid #ddd;
+    border-top: 1px solid #999;
+    border-left: 1px solid #888;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
     margin-top: 5px;
     box-sizing: border-box;
 }
@@ -456,4 +461,6 @@ input[type=file] {
 .menu button {
     height: 40px;
     margin-top: 5px;
+    cursor: pointer;
+
 }
