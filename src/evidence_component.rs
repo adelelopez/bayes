@@ -1,12 +1,11 @@
 // evidence_component.rs
-use crate::chance_component::{percentize, Kind};
+use crate::chance_component::Kind;
 use crate::ChanceComponent;
 use crate::LabelComponent;
 use stylist::css;
 
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
-
 
 #[derive(Properties, PartialEq)]
 pub struct EvidenceProps {
@@ -31,7 +30,7 @@ pub enum Msg {
 
 pub enum EvidenceCallback {
     OddsUpdate(usize, Vec<f64>),
-    LabelEdit(String)
+    LabelEdit(String),
 }
 
 impl Component for EvidenceComponent {
@@ -48,47 +47,48 @@ impl Component for EvidenceComponent {
     }
 
     fn view(&self, ctx: &yew::Context<Self>) -> Html {
-
-        let onchange_label =  ctx.link().callback(move |label: String| Msg::EditLabel(AttrValue::from(label)));
+        let onchange_label = ctx
+            .link()
+            .callback(move |label: String| Msg::EditLabel(AttrValue::from(label)));
         let onchange = ctx.props().onchange.clone();
-        
+
         let onchange_odds = move |hyp_idx: usize| {
-            ctx.link()
-                .callback(move |(idx, new_odds, _): (usize, Vec<f64>, Vec<AttrValue>)| {
+            ctx.link().callback(
+                move |(idx, new_odds, _): (usize, Vec<f64>, Vec<AttrValue>)| {
                     onchange.emit(EvidenceCallback::OddsUpdate(hyp_idx, new_odds.clone()));
                     Msg::Likelihood(hyp_idx, idx, new_odds)
-                })
+                },
+            )
         };
 
-        let prior_odds = ctx.props().prior_odds.clone();
-        let prior_odds_percent = percentize(prior_odds.clone());
-        let display_before_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
-            html!{
-                <div class={format!("c{idx}", idx=odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0])}>
-                {" "}
-            </div>
-            });
+        // let prior_odds = ctx.props().prior_odds.clone();
+        // let prior_odds_percent = percentize(prior_odds.clone());
+        // let display_before_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
+        //     html!{
+        //         <div class={format!("c{idx}", idx=odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0])}>
+        //         {" "}
+        //     </div>
+        //     });
 
-        let prior_odds_percent2 = percentize(prior_odds.clone());
+        // let prior_oddst_percent2 = percentize(prior_odds);
 
-        let display_after_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
-            html!{
-                <>
-                    <div class={format!("d{idx} c0", idx=odds.0)} style={format!("width:{}%", prior_odds_percent2[odds.0]*percentize(self.likelihoods[odds.0].clone())[0])}>
-                    {" "}
-                    </div>
-                    <div class={format!("d{idx} c1", idx=odds.0)} style={format!("width:{}%", prior_odds_percent2[odds.0]*percentize(self.likelihoods[odds.0].clone())[1])}>
-                    {" "}
-                    </div>
-    
-                </>
-                });
+        // let display_after_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
+        //     html!{
+        //         <>
+        //             <div class={format!("d{idx} c0", idx=odds.0)} style={format!("width:{}%", prior_odds_percent2[odds.0]*percentize(self.likelihoods[odds.0].clone())[0])}>
+        //             {" "}
+        //             </div>
+        //             <div class={format!("d{idx} c1", idx=odds.0)} style={format!("width:{}%", prior_odds_percent2[odds.0]*percentize(self.likelihoods[odds.0].clone())[1])}>
+        //             {" "}
+        //             </div>
+        //         </>
+        //         });
 
         let display_hypothesis_evidence = ctx.props().hypotheses.iter().enumerate().map(move |hypotheses|
             html!{
             <>
             <div class={format!("d{idx}", idx=hypotheses.0)}>
-            <ChanceComponent 
+            <ChanceComponent
                 onchange={&onchange_odds.clone()(hypotheses.0)}
                 hypotheses={vec!(AttrValue::from("if"), AttrValue::from("if not"))} kind={Kind::Evidence}
                 force_chance={Some(ctx.props().likelihoods[hypotheses.0].clone())}
@@ -107,7 +107,7 @@ impl Component for EvidenceComponent {
 
             <div class = "left">
             <div class = "ev">
-            <LabelComponent 
+            <LabelComponent
                 class={AttrValue::from("evidence")}
               placeholder={AttrValue::from(self.evidence.clone())}
               onchange={&onchange_label}
@@ -147,19 +147,20 @@ impl Component for EvidenceComponent {
         self.likelihoods = ctx.props().likelihoods.clone();
         self.evidence = AttrValue::from(ctx.props().label.clone());
 
-        
         while self.likelihoods.len() < ctx.props().hypotheses.len() {
             self.likelihoods.push(vec![1.0, 1.0]);
         }
 
         match msg {
-            Msg::EditLabel(val) => {          
+            Msg::EditLabel(val) => {
                 self.evidence = val.clone();
-                ctx.props().onchange.emit(EvidenceCallback::LabelEdit(val.to_string()));
+                ctx.props()
+                    .onchange
+                    .emit(EvidenceCallback::LabelEdit(val.to_string()));
                 true
             }
             Msg::Likelihood(hyp_idx, idx, new_odds) => {
-                self.likelihoods[hyp_idx][idx] = new_odds[idx];           
+                self.likelihoods[hyp_idx][idx] = new_odds[idx];
                 true
             }
         }

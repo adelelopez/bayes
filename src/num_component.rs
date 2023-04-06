@@ -40,7 +40,7 @@ impl Component for NumComponent {
             is_blank: false,
             editing: false,
         }
-    } 
+    }
 
     fn view(&self, ctx: &yew::Context<Self>) -> Html {
         let cur_val = self.value;
@@ -51,38 +51,40 @@ impl Component for NumComponent {
             let input_el: HtmlInputElement = e.target_unchecked_into();
             let cursor_position = input_el.selection_start().unwrap_or(Some(0));
             let val_str = input_el.value();
-        
+
             let msg = match val_str.parse() {
-                Ok(_) if val_str.ends_with('.') || (val_str.ends_with('0') && val_str.matches('.').count() == 1) => {
+                Ok(_)
+                    if val_str.ends_with('.')
+                        || (val_str.ends_with('0') && val_str.matches('.').count() == 1) =>
+                {
                     Msg::DoNothing
                 }
-                Ok(val) => {
-                    Msg::SetInput(val)
-                }
-                Err(_) => {
-                    match val_str.as_str() {
-                        "" => Msg::Blank,
-                        "-" | _ if val_str.ends_with('.') && val_str.matches('.').count() == 1 => Msg::DoNothing,
-                        _ => Msg::SetInput(cur_val),
+                Ok(val) => Msg::SetInput(val),
+                Err(_) => match val_str.as_str() {
+                    "" => Msg::Blank,
+                    _ if val_str.ends_with('.') && val_str.matches('.').count() == 1 => {
+                        Msg::DoNothing
                     }
-                }
+                    _ => Msg::SetInput(cur_val),
+                },
             };
 
             if let Msg::SetInput(_) = msg {
                 if let Some(pos) = cursor_position {
                     gloo_timers::callback::Timeout::new(0, move || {
                         input_el.set_selection_range(pos, pos).ok();
-                    }).forget();
+                    })
+                    .forget();
                 }
             }
             msg
         });
 
-
         let input_ref = self.input_ref.clone();
         let placeholder = ctx.props().placeholder.clone();
 
-        let invalid = ctx.props().min_value.map_or(false, |min| min > cur_val) || ctx.props().max_value.map_or(false, |max| max < cur_val);
+        let invalid = ctx.props().min_value.map_or(false, |min| min > cur_val)
+            || ctx.props().max_value.map_or(false, |max| max < cur_val);
         let class_str = class.to_string() + if invalid { " invalid" } else { "" };
 
         if ctx.props().display_only {
@@ -94,23 +96,22 @@ impl Component for NumComponent {
             }
         } else {
             let value = if self.editing {
-                self.get_input_element().map(|input_element| input_element.value()).unwrap_or_default()
+                self.get_input_element()
+                    .map(|input_element| input_element.value())
+                    .unwrap_or_default()
+            } else if self.is_blank {
+                "".to_string()
             } else {
-                if self.is_blank {
-                    "".to_string()
-                } else {
-                    ctx.props().force_value.unwrap_or(self.value).to_string()
-                }
+                ctx.props().force_value.unwrap_or(self.value).to_string()
             };
 
-            html! {      
+            html! {
                 <input ref={input_ref} class={class_str}
                       value={value} onblur={onblur}
                     type="text" {oninput} placeholder={placeholder} />
-            }    
-        }   
+            }
+        }
     }
-    
 
     fn changed(&mut self, ctx: &yew::Context<Self>) -> bool {
         if ctx.props().force_value != None {
@@ -120,7 +121,7 @@ impl Component for NumComponent {
     }
 
     fn rendered(&mut self, ctx: &yew::Context<Self>, _first_render: bool) {
-        if ctx.props().force_value != None  {
+        if ctx.props().force_value != None {
             self.value = ctx.props().force_value.unwrap();
         }
     }
@@ -152,7 +153,7 @@ impl Component for NumComponent {
             }
         }
     }
-}    
+}
 
 impl NumComponent {
     fn get_input_element(&self) -> Option<HtmlInputElement> {

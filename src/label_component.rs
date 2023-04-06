@@ -6,7 +6,7 @@ pub enum Msg {
     SetInput(AttrValue),
     Blur,
     EditMode,
-    Delete,
+    // Delete,
 }
 
 #[derive(Properties, PartialEq)]
@@ -25,7 +25,7 @@ pub struct LabelComponent {
     input_ref: NodeRef,
     value: AttrValue,
     edit_mode: bool,
-    should_focus: bool, 
+    should_focus: bool,
 }
 
 impl Component for LabelComponent {
@@ -46,7 +46,6 @@ impl Component for LabelComponent {
         true
     }
 
-
     fn rendered(&mut self, ctx: &yew::Context<Self>, _first_render: bool) {
         self.value = ctx.props().placeholder.clone();
 
@@ -58,7 +57,7 @@ impl Component for LabelComponent {
         }
     }
 
-    fn update(&mut self, ctx: &yew::Context<Self>, msg: Self::Message) -> bool {     
+    fn update(&mut self, ctx: &yew::Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::SetInput(value) => {
                 self.value = value.clone();
@@ -73,11 +72,10 @@ impl Component for LabelComponent {
                 self.edit_mode = true;
                 self.should_focus = true;
                 true
-            }
-            Msg::Delete => {
-                self.value = "".into();
-                true
-            }
+            } // Msg::Delete => {
+              //     self.value = "".into();
+              //     true
+              // }
         }
     }
 
@@ -90,7 +88,7 @@ impl Component for LabelComponent {
 
         let onblur = ctx.link().callback(|_: FocusEvent| Msg::Blur);
         let onclick_edit = ctx.link().callback(|_: MouseEvent| Msg::EditMode);
-        let onclick_delete = ctx.link().callback(|_: MouseEvent| Msg::Delete);
+        // let onclick_delete = ctx.link().callback(|_: MouseEvent| Msg::Delete);
 
         let value = self.value.clone();
 

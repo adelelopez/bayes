@@ -1,15 +1,15 @@
 // chance_component.rs
-use crate::NumComponent;
 use crate::LabelComponent;
+use crate::NumComponent;
 use is_close::all_close;
 use stylist::css;
-use yew::virtual_dom::AttrValue;
 use yew::prelude::*;
+use yew::virtual_dom::AttrValue;
 
-pub fn normalize(odds: Vec<f64>) -> Vec<f64> {
-    let total = odds.iter().sum::<f64>();
-    odds.iter().map(|x| x / total).collect()
-}
+// pub fn normalize(odds: Vec<f64>) -> Vec<f64> {
+//     let total = odds.iter().sum::<f64>();
+//     odds.iter().map(|x| x / total).collect()
+// }
 
 pub fn percentize(odds: Vec<f64>) -> Vec<f64> {
     let total = odds.iter().sum::<f64>();
@@ -23,7 +23,7 @@ pub enum Msg {
     EditHypothesis(usize, String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Kind {
     Prior,
     Evidence,
@@ -67,7 +67,7 @@ impl Component for ChanceComponent {
                     .clone()
                     .unwrap()
                     .into_iter()
-                    .map(|x| Some(x))
+                    .map(Some)
                     .collect()
             } else {
                 vec![Some(100.0 / length as f64); length]
@@ -86,9 +86,9 @@ impl Component for ChanceComponent {
             odds: init_odds,
             force_odds: init_force,
         };
-    
+
         instance.update_force_chance(&ctx.props().force_chance);
-    
+
         instance
     }
 
@@ -100,26 +100,29 @@ impl Component for ChanceComponent {
             ""
         };
 
-
         let onchange_odds = |idx: usize| ctx.link().callback(move |odds: f64| Msg::Odds(idx, odds));
-        let onchange_hypothesis = |idx: usize| ctx.link().callback(move |label: String| Msg::EditHypothesis(idx, label));
+        let onchange_hypothesis = |idx: usize| {
+            ctx.link()
+                .callback(move |label: String| Msg::EditHypothesis(idx, label))
+        };
 
-        let onclick_percentize = |_: usize| ctx.link().callback(move |_e: MouseEvent| Msg::Percentize);
+        let onclick_percentize =
+            |_: usize| ctx.link().callback(move |_e: MouseEvent| Msg::Percentize);
         let onclick_add_hypothesis = {
             ctx.link()
                 .callback(move |_e: MouseEvent| Msg::AddHypothesis)
         };
 
-        let display_hypotheses = ctx.props().hypotheses.iter().enumerate().map(
-            move |hyp| html! {
-            <LabelComponent 
-            class={AttrValue::from(format!("c{idx} hyp", idx=hyp.0))}
-            placeholder={AttrValue::from(hyp.1.clone())}
-            onchange={&onchange_hypothesis(hyp.0)}
-            display_only={ctx.props().kind != Kind::Prior}
-            />
-        },
-        );
+        let display_hypotheses = ctx.props().hypotheses.iter().enumerate().map(move |hyp| {
+            html! {
+                <LabelComponent
+                class={AttrValue::from(format!("c{idx} hyp", idx=hyp.0))}
+                placeholder={AttrValue::from(hyp.1.clone())}
+                onchange={&onchange_hypothesis(hyp.0)}
+                display_only={ctx.props().kind != Kind::Prior}
+                />
+            }
+        });
 
         let display_odds = ctx.props().hypotheses.iter().enumerate().map(move |odds| {
             html! {<div class={format!("c{idx}", idx=odds.0)}>
@@ -132,7 +135,6 @@ impl Component for ChanceComponent {
             </div>  </div>}
         });
 
-       
         let display_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
             html!{
                 <div class={format!("c{idx}", idx=odds.0)} style={format!("width:{}%", percents[odds.0])}>
@@ -154,7 +156,7 @@ impl Component for ChanceComponent {
             {for display_hypotheses}
             {for display_odds}
             </div>
-            
+
             <div class={css!(r#"display: flex;"#)} style={format!("height: 20px; width:{}px",100*cols)}>
             {for display_bar}
             </div>
@@ -168,11 +170,18 @@ impl Component for ChanceComponent {
     }
 
     fn changed(&mut self, ctx: &yew::Context<Self>) -> bool {
-        if ctx.props().force_chance != Some(self.force_odds.iter().filter_map(|x| x.clone()).collect::<Vec<f64>>()) {
+        if ctx.props().force_chance
+            != Some(
+                self.force_odds
+                    .iter()
+                    .filter_map(|x| *x)
+                    .collect::<Vec<f64>>(),
+            )
+        {
             self.update_force_chance(&ctx.props().force_chance);
         }
         if self.odds.len() < ctx.props().hypotheses.len() {
-            self.force_odds = self.odds.clone().into_iter().map(|x| Some(x)).collect();
+            self.force_odds = self.odds.clone().into_iter().map(Some).collect();
             self.odds.push(1.0);
             self.force_odds.push(None);
         }
@@ -184,7 +193,7 @@ impl Component for ChanceComponent {
 
     fn rendered(&mut self, ctx: &yew::Context<Self>, _first_render: bool) {
         if self.odds.len() != ctx.props().hypotheses.len() {
-            self.force_odds = self.odds.clone().into_iter().map(|x| Some(x)).collect();
+            self.force_odds = self.odds.clone().into_iter().map(Some).collect();
             self.odds.push(1.0);
             self.force_odds.push(Some(1.0));
         }
@@ -193,9 +202,8 @@ impl Component for ChanceComponent {
                 self.odds[idx] = self.force_odds[idx].unwrap()
             }
         }
-        
-        self.hypotheses = ctx.props().hypotheses.clone();
 
+        self.hypotheses = ctx.props().hypotheses.clone();
     }
 
     fn update(&mut self, ctx: &yew::Context<Self>, msg: Self::Message) -> bool {
@@ -216,7 +224,7 @@ impl Component for ChanceComponent {
             }
             Msg::Percentize => {
                 self.odds = percentize(self.odds.clone());
-                self.force_odds = self.odds.clone().into_iter().map(|x| Some(x)).collect();
+                self.force_odds = self.odds.clone().into_iter().map(Some).collect();
                 for idx in 0..self.odds.len() {
                     onchange.emit((idx, self.odds.clone(), self.hypotheses.clone()));
                 }
@@ -241,7 +249,7 @@ impl ChanceComponent {
     fn update_force_chance(&mut self, force_chance: &Option<Vec<f64>>) {
         if let Some(force_chance) = force_chance {
             self.odds = force_chance.clone();
-            self.force_odds = self.odds.clone().into_iter().map(|x| Some(x)).collect();
+            self.force_odds = self.odds.clone().into_iter().map(Some).collect();
         }
     }
 }

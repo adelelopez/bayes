@@ -1,7 +1,7 @@
 use bayes_component::BayesComponent;
 use chance_component::ChanceComponent;
-use label_component::LabelComponent;
 use evidence_component::EvidenceComponent;
+use label_component::LabelComponent;
 use num_component::NumComponent;
 use yew::prelude::*;
 

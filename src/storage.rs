@@ -1,12 +1,11 @@
-use crate::chance_component::percentize;
 use crate::bayes_component::recalculate;
-use std::str::FromStr;
-use std::num::ParseFloatError;
+use crate::chance_component::percentize;
 use serde::{Deserialize, Serialize};
 use std::fmt;
+use std::num::ParseFloatError;
+use std::str::FromStr;
 use wasm_bindgen::JsCast;
 use web_sys::{window, Blob, BlobPropertyBag, HtmlAnchorElement};
-
 
 #[derive(Serialize, Deserialize)]
 pub struct BayesData {
@@ -47,8 +46,8 @@ pub fn parse_markdown(content: &str) -> Result<BayesData, MarkdownParseError> {
         }
 
         let (hypothesis, value) = line
-    .split_once(':')
-    .ok_or_else(|| MarkdownParseError::InvalidFormat("Invalid format".to_string()))?;
+            .split_once(':')
+            .ok_or_else(|| MarkdownParseError::InvalidFormat("Invalid format".to_string()))?;
         let hypothesis = hypothesis.trim().to_string();
         let value = value.trim();
 
@@ -78,8 +77,7 @@ pub fn parse_markdown(content: &str) -> Result<BayesData, MarkdownParseError> {
         // TODO: validation
     }
 
-    let posterior_odds = recalculate(prior_odds.clone(), likelihoods.clone());
-    let posterior_odds = percentize(posterior_odds.clone());
+    let posterior_odds = percentize(recalculate(prior_odds.clone(), likelihoods.clone()));
 
     Ok(BayesData {
         hypotheses,
@@ -91,11 +89,12 @@ pub fn parse_markdown(content: &str) -> Result<BayesData, MarkdownParseError> {
 }
 
 pub fn export_to_markdown(state: &BayesData) {
-    let markdown = format!("{}", state);  
+    let markdown = format!("{}", state);
     let blob = Blob::new_with_str_sequence_and_options(
         &js_sys::Array::of1(&markdown.into()),
         BlobPropertyBag::new().type_("text/markdown"),
-    ).unwrap();
+    )
+    .unwrap();
     let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
     let filename = state.hypotheses.join(",") + ".bayes.md";
     let document = window().expect("REASON").document().unwrap();
@@ -124,9 +123,13 @@ impl fmt::Display for BayesData {
         for (ev_idx, likelihood) in self.likelihoods.iter().enumerate() {
             writeln!(f, "\n### {}:", self.evidence[ev_idx])?;
             for (idx, hypothesis) in self.hypotheses.iter().enumerate() {
-                writeln!(f, "{}: {}:{}", hypothesis, likelihood[idx][0], likelihood[idx][1])?;
+                writeln!(
+                    f,
+                    "{}: {}:{}",
+                    hypothesis, likelihood[idx][0], likelihood[idx][1]
+                )?;
             }
-        } 
+        }
 
         writeln!(f, "\n## Posterior")?;
         for (idx, hypothesis) in self.hypotheses.iter().enumerate() {
