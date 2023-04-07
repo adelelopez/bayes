@@ -4,7 +4,7 @@ use yew::virtual_dom::AttrValue;
 
 pub enum Msg {
     SetInput(f64),
-    DoNothing,
+    SoftInput(f64),
     Blank,
     Blur,
 }
@@ -53,17 +53,13 @@ impl Component for NumComponent {
             let val_str = input_el.value();
 
             let msg = match val_str.parse() {
-                Ok(_)
-                    if val_str.ends_with('.')
-                        || (val_str.ends_with('0') && val_str.matches('.').count() == 1) =>
-                {
-                    Msg::DoNothing
-                }
-                Ok(val) => Msg::SetInput(val),
+                Ok(val) => Msg::SoftInput(val),
                 Err(_) => match val_str.as_str() {
                     "" => Msg::Blank,
-                    _ if val_str.ends_with('.') && val_str.matches('.').count() == 1 => {
-                        Msg::DoNothing
+                    _ if val_str.matches('.').count() == 1
+                        && val_str.chars().all(|c| c.is_numeric() || c == '.') =>
+                    {
+                        Msg::SoftInput(cur_val)
                     }
                     _ => Msg::SetInput(cur_val),
                 },
@@ -136,8 +132,11 @@ impl Component for NumComponent {
                 ctx.props().onchange.emit(val);
                 true
             }
-            Msg::DoNothing => {
+            Msg::SoftInput(val) => {
+                self.value = val;
                 self.editing = true;
+                self.is_blank = true;
+                ctx.props().onchange.emit(val);
                 true
             }
             Msg::Blur => {

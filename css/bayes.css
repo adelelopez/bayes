@@ -98,9 +98,6 @@ button.add-evidence{
     margin-top: 3px
 }
 
-button.no_button{
-    border: none;
-}
 
 .clear-session {
     width: 100%;
@@ -463,4 +460,10 @@ input[type=file] {
     margin-top: 5px;
     cursor: pointer;
 
+}
+
+
+button.no_button{
+    border: none;
+    cursor: default !important;
 }

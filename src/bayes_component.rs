@@ -101,7 +101,6 @@ impl Component for BayesComponent {
     }
 
     fn view(&self, ctx: &yew::Context<Self>) -> Html {
-        log::debug!("ev: {:?}", self.data.evidence);
         let onchange_prior = ctx
             .link()
             .callback(move |(u, e, h): (usize, Vec<f64>, Vec<AttrValue>)| Msg::Prior(u, e, h));
@@ -207,7 +206,10 @@ impl Component for BayesComponent {
                 if self.data.hypotheses.len() == 5 {
                     return false;
                 }
-                self.data.hypotheses.push("hypo".to_string());
+                self.data.hypotheses.push(format!(
+                    "Hypothesis {}",
+                    (b'A' + self.data.hypotheses.len() as u8) as char
+                ));
                 self.data.prior_odds.push(1.0);
                 self.data.posterior_odds.push(1.0);
                 for ev_idx in 0..self.data.evidence.len() {

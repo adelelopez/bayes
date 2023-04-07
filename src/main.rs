@@ -15,9 +15,7 @@ mod storage;
 #[function_component(App)]
 fn app() -> Html {
     html! {
-        <>
-            <BayesComponent/>
-        </>
+        <BayesComponent/>
     }
 }
 fn main() {
