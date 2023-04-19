@@ -17,23 +17,19 @@ use yew::virtual_dom::AttrValue;
 
 use yew::prelude::*;
 
-pub fn likelihood(odds: Vec<f64>) -> f64 {
-    odds[0] / (odds[0] + odds[1])
-}
-
-pub fn recalculate(prior: Vec<f64>, likelihoods: Vec<Vec<Vec<f64>>>) -> Vec<f64> {
+pub fn recalculate(prior: Vec<f64>, likelihoods: Vec<Vec<f64>>) -> Vec<f64> {
     prior
         .into_iter()
         .enumerate()
         .map(|(hyp_idx, prior_val)| {
             likelihoods
                 .iter()
-                .fold(prior_val, |acc, ev| acc * likelihood(ev[hyp_idx].clone()))
+                .fold(prior_val, |acc, ev| acc * ev[hyp_idx])
         })
         .collect()
 }
 
-pub fn recalculate_to(prior: Vec<f64>, likelihoods: Vec<Vec<Vec<f64>>>, to: usize) -> Vec<f64> {
+pub fn recalculate_to(prior: Vec<f64>, likelihoods: Vec<Vec<f64>>, to: usize) -> Vec<f64> {
     prior
         .into_iter()
         .enumerate()
@@ -41,7 +37,7 @@ pub fn recalculate_to(prior: Vec<f64>, likelihoods: Vec<Vec<Vec<f64>>>, to: usiz
             likelihoods
                 .iter()
                 .take(to)
-                .fold(prior_val, |acc, ev| acc * likelihood(ev[hyp_idx].clone()))
+                .fold(prior_val, |acc, ev| acc * ev[hyp_idx])
         })
         .collect()
 }
@@ -55,7 +51,7 @@ fn save_data(data: &BayesData) {
 pub enum Msg {
     AddHypothesis,
     Prior(usize, Vec<f64>, Vec<AttrValue>),
-    Evidence(usize, usize, Vec<f64>),
+    Evidence(usize, usize, f64),
     EditEvidence(usize, String),
     AddEvidence,
     Posterior,
@@ -84,7 +80,7 @@ impl Component for BayesComponent {
             prior_odds: vec![1.0, 1.0],
             posterior_odds: vec![50.0, 50.0],
             evidence: vec!["<evidence>".to_string()],
-            likelihoods: vec![vec![vec![1.0, 1.0], vec![1.0, 1.0]]],
+            likelihoods: vec![vec![0.5, 0.5]],
         };
 
         if let Ok(serialized) = SessionStorage::get::<String>("bayes_component") {
@@ -152,8 +148,8 @@ impl Component for BayesComponent {
 
         html! {
             <div class="container">
-                <div style="position: absolute;left: 30px;top: 50px;font-size: 1.3rem;width: 120px;">
-                    {"Press the '%' button to convert to percentages with the same ratio"}
+                <div style="position: absolute;left: 20px;top: 20px;font-size: 2rem;width: 150px;">
+                    {"Bayes App"}
                     <div class="menu">
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="export-markdown" onclick={onclick_export}>{"Export"}</button>
@@ -173,7 +169,7 @@ impl Component for BayesComponent {
                 <div class="main">
                     <div class="prior">
                         <div class="left">
-                            <p>{"Without seeing any evidence, how often would you expect these possibilities?"}</p>
+                        <p> {"Prior"}</p>
                         </div>
                         <div class="center">
                             <ChanceComponent onchange={onchange_prior} force_chance={Some(self.data.prior_odds.clone())}
@@ -188,7 +184,7 @@ impl Component for BayesComponent {
 
                     <div class="posterior">
                         <div class="left">
-                            <p>{"Based on the evidence given, the updated percentages are: "}</p>
+                        <p> {"Posterior"}</p>
                         </div>
                         <div class="center">
                             <ChanceComponent onchange={onchange_posterior} force_chance={Some(self.data.posterior_odds.clone())}
@@ -213,7 +209,7 @@ impl Component for BayesComponent {
                 self.data.prior_odds.push(1.0);
                 self.data.posterior_odds.push(1.0);
                 for ev_idx in 0..self.data.evidence.len() {
-                    self.data.likelihoods[ev_idx].push(vec![1.0, 1.0]);
+                    self.data.likelihoods[ev_idx].push(0.5);
                 }
             }
             Msg::Prior(idx, val, hyp) => {
@@ -225,7 +221,7 @@ impl Component for BayesComponent {
                 self.data.evidence.push("<evidence>".to_string());
                 self.data
                     .likelihoods
-                    .push(vec![vec![1.0, 1.0]; self.data.hypotheses.len()]);
+                    .push(vec![0.5; self.data.hypotheses.len()]);
             }
             Msg::Evidence(ev_idx, hyp_idx, new_odds) => {
                 self.data.likelihoods[ev_idx][hyp_idx] = new_odds;
@@ -241,7 +237,7 @@ impl Component for BayesComponent {
                     prior_odds: vec![1.0, 1.0],
                     posterior_odds: vec![50.0, 50.0],
                     evidence: vec!["<evidence>".to_string()],
-                    likelihoods: vec![vec![vec![1.0, 1.0], vec![1.0, 1.0]]],
+                    likelihoods: vec![vec![0.5, 0.5]],
                 };
             }
             Msg::Export => {
