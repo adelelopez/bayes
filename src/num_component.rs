@@ -87,7 +87,7 @@ impl Component for NumComponent {
             let val = ctx.props().force_value.unwrap_or(self.value) as f32;
             html! {
                 <div class={class_str}>
-                {val}
+                {format!("{:.*}", 5, val)}
                 </div>
             }
         } else {
@@ -98,7 +98,7 @@ impl Component for NumComponent {
             } else if self.is_blank {
                 "".to_string()
             } else {
-                ctx.props().force_value.unwrap_or(self.value).to_string()
+                format_num::format_num!("#.1f", ctx.props().force_value.unwrap_or(self.value))
             };
 
             html! {

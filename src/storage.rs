@@ -13,7 +13,7 @@ pub struct BayesData {
     pub prior_odds: Vec<f64>,
     pub posterior_odds: Vec<f64>,
     pub evidence: Vec<String>,
-    pub likelihoods: Vec<Vec<Vec<f64>>>,
+    pub likelihoods: Vec<Vec<f64>>,
 }
 
 #[derive(Debug)]
@@ -32,7 +32,7 @@ pub fn parse_markdown(content: &str) -> Result<BayesData, MarkdownParseError> {
     let mut hypotheses: Vec<String> = Vec::new();
     let mut prior_odds: Vec<f64> = Vec::new();
     let mut evidence: Vec<String> = Vec::new();
-    let mut likelihoods: Vec<Vec<Vec<f64>>> = Vec::new();
+    let mut likelihoods: Vec<Vec<f64>> = Vec::new();
 
     let mut current_section: &str = "";
 
@@ -61,11 +61,8 @@ pub fn parse_markdown(content: &str) -> Result<BayesData, MarkdownParseError> {
                     evidence.push(hypothesis.trim_start_matches('#').trim().to_string());
                     likelihoods.push(Vec::new());
                 } else {
-                    let odds = value
-                        .split(':')
-                        .map(|x| f64::from_str(x.trim()))
-                        .collect::<Result<Vec<f64>, _>>()?;
-                    likelihoods.last_mut().unwrap().push(odds);
+                    let likelihood = 0.01 * f64::from_str(value.trim_end_matches('%'))?;
+                    likelihoods.last_mut().unwrap().push(likelihood);
                 }
             }
             "Posterior" => {
@@ -123,11 +120,7 @@ impl fmt::Display for BayesData {
         for (ev_idx, likelihood) in self.likelihoods.iter().enumerate() {
             writeln!(f, "\n### {}:", self.evidence[ev_idx])?;
             for (idx, hypothesis) in self.hypotheses.iter().enumerate() {
-                writeln!(
-                    f,
-                    "{}: {}:{}",
-                    hypothesis, likelihood[idx][0], likelihood[idx][1]
-                )?;
+                writeln!(f, "{}: {}%", hypothesis, likelihood[idx])?;
             }
         }
 
