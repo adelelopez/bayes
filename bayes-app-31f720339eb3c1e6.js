@@ -213,11 +213,11 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_22(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h1b0b078a657de1b1(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hedf96aebeafece43(arg0, arg1);
 }
 
 function __wbg_adapter_25(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hab8f74f8ad3845f6(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2ac855dd3f2309fe(arg0, arg1, addHeapObject(arg2));
 }
 
 function makeClosure(arg0, arg1, dtor, f) {
@@ -695,16 +695,16 @@ function getImports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper257 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 100, __wbg_adapter_22);
+    imports.wbg.__wbindgen_closure_wrapper441 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 199, __wbg_adapter_22);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper259 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 100, __wbg_adapter_25);
+    imports.wbg.__wbindgen_closure_wrapper442 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 199, __wbg_adapter_25);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper995 = function(arg0, arg1, arg2) {
-        const ret = makeClosure(arg0, arg1, 344, __wbg_adapter_28);
+    imports.wbg.__wbindgen_closure_wrapper1695 = function(arg0, arg1, arg2) {
+        const ret = makeClosure(arg0, arg1, 543, __wbg_adapter_28);
         return addHeapObject(ret);
     };
 
@@ -743,7 +743,7 @@ function initSync(module) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('bayes-app-fde7490eaa0602bd_bg.wasm', import.meta.url);
+        input = new URL('bayes-app-31f720339eb3c1e6_bg.wasm', import.meta.url);
     }
     const imports = getImports();
 
