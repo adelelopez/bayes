@@ -49,8 +49,6 @@ impl Component for NumComponent {
 
         let oninput = ctx.link().callback(move |e: InputEvent| {
             let input_el: HtmlInputElement = e.target_unchecked_into();
-            log::debug!("{:?}", input_el.name());
-
             let cursor_position = input_el.selection_start().unwrap_or(Some(0));
             let val_str = input_el.value();
 
@@ -100,12 +98,8 @@ impl Component for NumComponent {
             } else if self.is_blank {
                 "".to_string()
             } else {
-                //if ctx.props().updated_from_slider{
                 format_num::format_num!("#.1f", ctx.props().force_value.unwrap_or(self.value))
-            }; // else {
-               //     ctx.props().force_value.unwrap_or(self.value).to_string()
-               // };
-
+            };
             html! {
                 <input ref={input_ref} class={class_str}
                       value={value} onblur={onblur}

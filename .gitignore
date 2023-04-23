@@ -1,5 +1,4 @@
 .DS_Store
 
 /target
-/target/*
 /Cargo.lock
