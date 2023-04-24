@@ -138,7 +138,6 @@ impl Component for ChanceComponent {
         let display_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
             html!{
                 <div class={format!("c{idx}", idx=odds.0)} style={format!("width:{}%", percents[odds.0])}>
-                {" "}
                 </div>
         });
 

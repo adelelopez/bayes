@@ -120,7 +120,7 @@ impl fmt::Display for BayesData {
         for (ev_idx, likelihood) in self.likelihoods.iter().enumerate() {
             writeln!(f, "\n### {}:", self.evidence[ev_idx])?;
             for (idx, hypothesis) in self.hypotheses.iter().enumerate() {
-                writeln!(f, "{}: {}%", hypothesis, likelihood[idx])?;
+                writeln!(f, "{}: {}%", hypothesis, 100.0 * likelihood[idx])?;
             }
         }
 

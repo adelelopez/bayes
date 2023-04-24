@@ -87,10 +87,10 @@ impl Component for EvidenceComponent {
             html!{
                 <>
                     <div class={format!("d{idx} c0", idx=odds.0)} style={format!("width:{}%", prior_odds_percent2[odds.0]*self.likelihoods[odds.0])}>
-                    {" "}
+
                     </div>
                     <div class={format!("d{idx} c1", idx=odds.0)} style={format!("width:{}%", prior_odds_percent2[odds.0]*(1.0-self.likelihoods[odds.0]))}>
-                    {" "}
+
                     </div>
                 </>
                 });
@@ -106,10 +106,10 @@ impl Component for EvidenceComponent {
                 <input type="range" min=0.0 max=1.0 step={0.001} value={AttrValue::from((self.likelihoods[hypotheses.0]).to_string())} class="slider" oninput={onslide(hypotheses.0)} />
                 <div class="before-bar">
                     <div class={"c0"} style={format!("width:{}%", 100.0*self.likelihoods[hypotheses.0])}>
-                    {" "}
                     </div>
+                    <div class="triangle-top"></div>
+                    <div class="triangle-bot"></div>
                     <div class={"c1"} style={format!("width:{}%", 100.0*(1.0-self.likelihoods[hypotheses.0]))}>
-                    {" "}
                     </div>
                 </div>
                 <div class="percent-symbol">

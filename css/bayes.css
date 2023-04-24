@@ -111,13 +111,14 @@ button.add-evidence{
 }
 
 .before-bar {
-    position: absolute;
     top: 0; 
     left: 0;
     width: 100%; 
     height: 100%; 
     display: flex;
     z-index: 1; 
+    position: relative;
+    overflow: hidden;
 }
 
 .after-bar {
@@ -133,10 +134,14 @@ button.add-evidence{
 
 .prior .percent button{
     padding-top: 3.3px;
-    padding-bottom: 2px;
-    padding-right: 5.5px;
+    /* padding-bottom: 2px; */
+    /* padding-right: 5.5px; */
     cursor: pointer;
-    margin-left: 0.7px;
+    width: 30px;
+    /* margin-left: 0.7px; */
+    /* position: absolute;
+    right: 4px; */
+    font-size: 0.75em;
 
 }
 
@@ -213,7 +218,7 @@ label {
 }
 
 .percent {
-    display: inline-flex;
+    display: inline;
     border: #111;
 }
   
@@ -366,9 +371,10 @@ label {
 .label-button-edit {
     position: absolute;
     /* right: 23px; */
+    width: 30px;
     right: 4px;
     top: 4px;
-    border: 1px;
+    /* border: 1px; */
 }
 
 .label-button-x {
@@ -565,3 +571,32 @@ button.no_button{
     cursor: pointer;
     border: none;
   }
+
+
+.triangle-top::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 8px solid #557;
+    top: 0px;
+    left: calc(var(--percentage) * 1%);
+    transform: translateX(-50%);
+}
+
+
+.triangle-bot::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #557;
+    bottom: 0px;
+    left: calc(var(--percentage) * 1%);
+    transform: translateX(-50%);
+}
+

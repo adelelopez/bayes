@@ -100,7 +100,6 @@ impl Component for NumComponent {
             } else {
                 format_num::format_num!("#.1f", ctx.props().force_value.unwrap_or(self.value))
             };
-
             html! {
                 <input ref={input_ref} class={class_str}
                       value={value} onblur={onblur}
