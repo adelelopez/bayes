@@ -72,24 +72,15 @@ impl Component for EvidenceComponent {
             })
         };
 
-        let prior_odds = ctx.props().prior_odds.clone();
-        // let prior_odds_percent = percentize(prior_odds.clone());
-        // let display_before_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
-        //     html!{
-        //         <div class={format!("c{idx}", idx=odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0])}>
-        //         {" "}
-        //     </div>
-        //     });
-
-        let prior_odds_percent2 = percentize(prior_odds);
+        let prior_odds_percent = percentize(ctx.props().prior_odds.clone());
 
         let display_after_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
             html!{
                 <>
-                    <div class={format!("d{idx} c0", idx=odds.0)} style={format!("width:{}%", prior_odds_percent2[odds.0]*self.likelihoods[odds.0])}>
+                    <div class={format!("d{idx} c0", idx=odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0]*self.likelihoods[odds.0])}>
 
                     </div>
-                    <div class={format!("d{idx} c1", idx=odds.0)} style={format!("width:{}%", prior_odds_percent2[odds.0]*(1.0-self.likelihoods[odds.0]))}>
+                    <div class={format!("d{idx} c1", idx=odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0]*(1.0-self.likelihoods[odds.0]))}>
 
                     </div>
                 </>
@@ -123,10 +114,6 @@ impl Component for EvidenceComponent {
         html! {
             <div class="evidence">
 
-            // <div class="after-bar" style={format!("width:{}px",200*ctx.props().hypotheses.len())}>
-            // {for display_before_bar}
-            // </div>
-
             <div class = "left">
                 <div class = "ev">
                 <LabelComponent
@@ -145,8 +132,11 @@ impl Component for EvidenceComponent {
             {for display_hypothesis_evidence}
             </div>
 
+
             <div class="after-bar" style={format!("width:{}px",200*ctx.props().hypotheses.len())}>
+            <div class="bart">
             {for display_after_bar}
+            </div>
             </div>
 
             </div>

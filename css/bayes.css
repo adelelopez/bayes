@@ -600,3 +600,24 @@ button.no_button{
     transform: translateX(-50%);
 }
 
+
+.after-bar {
+    display: flex;
+    position: relative;
+}
+
+.bart{
+    display: flex;
+    position: relative;
+    width: 100%;
+}
+
+.after-bar .collapsed {
+    width: 0 !important;
+    transition: width 0.2s ease-in-out;
+}
+
+.after-bar .normalized {
+    transition: width 0.4s ease-in-out;
+    transition-delay: 0.4s;
+}

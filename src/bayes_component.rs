@@ -5,8 +5,11 @@ use crate::evidence_component::EvidenceCallback;
 use crate::storage::export_to_markdown;
 use crate::storage::parse_markdown;
 use crate::storage::BayesData;
+use gloo::utils::document;
+use js_sys::Array;
 use wasm_bindgen::closure::Closure;
 use web_sys::FileReader;
+use web_sys::HtmlElement;
 
 use crate::ChanceComponent;
 use crate::EvidenceComponent;
@@ -45,6 +48,61 @@ pub fn recalculate_to(prior: Vec<f64>, likelihoods: Vec<Vec<f64>>, to: usize) ->
 fn save_data(data: &BayesData) {
     let serialized = serde_json::to_string(&data).unwrap();
     SessionStorage::set("bayes_component", serialized).unwrap();
+}
+
+fn modify_class(elem: &HtmlElement, class_name: &str, add: bool) {
+    let class_array = Array::new();
+    class_array.push(&class_name.into());
+
+    if add {
+        elem.class_list()
+            .add(&class_array)
+            .expect("Error adding class");
+    } else {
+        elem.class_list()
+            .remove(&class_array)
+            .expect("Error removing class");
+    }
+}
+
+fn update_bar_widths(
+    elem: &HtmlElement,
+    collapsed: bool,
+    prior_odds: Vec<f64>,
+    likelihoods: Vec<Vec<f64>>,
+    ev: usize,
+) {
+    let p = percentize(recalculate_to(prior_odds.clone(), likelihoods.clone(), ev));
+    let q = percentize(recalculate_to(prior_odds, likelihoods.clone(), ev + 1));
+    for idx in 0..(elem.children().length() as usize) {
+        let el = elem
+            .children()
+            .get_with_index(idx as u32)
+            .unwrap()
+            .dyn_into::<HtmlElement>()
+            .unwrap();
+        let i = idx / 2;
+        if !collapsed {
+            if idx % 2 == 0 {
+                modify_class(&el, "normalized", false);
+                el.style()
+                    .set_property("width", &format!("{}%", p[i] * likelihoods[ev][i]))
+                    .expect("Error setting width");
+            } else {
+                modify_class(&el, "collapsed", false);
+                el.style()
+                    .set_property("width", &format!("{}%", p[i] * (1.0 - likelihoods[ev][i])))
+                    .expect("Error setting width");
+            }
+        } else if idx % 2 == 0 {
+            modify_class(&el, "normalized", true);
+            el.style()
+                .set_property("width", &format!("{}%", q[i]))
+                .expect("Error setting width");
+        } else {
+            modify_class(&el, "collapsed", true);
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -127,6 +185,39 @@ impl Component for BayesComponent {
                 })
         };
 
+        let prior_odds = self.data.prior_odds.clone();
+        let likelihoods = self.data.likelihoods.clone();
+
+        let onmousemove = move |e: MouseEvent| {
+            let elements = document().get_elements_by_class_name("bart");
+
+            for i in 0..elements.length() {
+                if let Some(elem) = elements.item(i) {
+                    let elem = elem.dyn_into::<HtmlElement>().unwrap();
+                    let elem_rect = elem.get_bounding_client_rect();
+
+                    let above_cursor = (e.client_y() as f64) < elem_rect.top();
+                    if above_cursor {
+                        update_bar_widths(
+                            &elem,
+                            false,
+                            prior_odds.clone(),
+                            likelihoods.clone(),
+                            i as usize,
+                        );
+                    } else {
+                        update_bar_widths(
+                            &elem,
+                            true,
+                            prior_odds.clone(),
+                            likelihoods.clone(),
+                            i as usize,
+                        );
+                    }
+                }
+            }
+        };
+
         let hypotheses: _ = self
             .data
             .hypotheses
@@ -147,7 +238,7 @@ impl Component for BayesComponent {
             });
 
         html! {
-            <div class="container">
+            <div class="container" onmousemove={onmousemove}>
                 <div style="position: absolute;left: 20px;top: 20px;font-size: 2rem;width: 150px;">
                     {"Bayes App"}
                     <div class="menu">
