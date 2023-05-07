@@ -82,7 +82,14 @@ impl Component for LabelComponent {
     fn view(&self, ctx: &yew::Context<Self>) -> Html {
         let oninput = ctx.link().callback(|e: InputEvent| {
             let input_el: HtmlInputElement = e.target_unchecked_into();
+            let cursor_position = input_el.selection_start().unwrap_or(Some(0));
             let val_str = input_el.value();
+            if let Some(pos) = cursor_position {
+                gloo_timers::callback::Timeout::new(0, move || {
+                    input_el.set_selection_range(pos, pos).ok();
+                })
+                .forget();
+            }
             Msg::SetInput(AttrValue::from(val_str))
         });
 
