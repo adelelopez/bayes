@@ -620,4 +620,36 @@ button.no_button{
 .after-bar .normalized {
     transition: width 0.4s ease-in-out;
     transition-delay: 0.4s;
+}.modal {
+    position: fixed;
+    z-index: 10;
+    right: 0;
+    top: 0;
+    width: 33%; /* Adjust this to control the width of your modal */
+    height: 100%;
+    overflow: auto;
+    background-color: #fefefe; /* Change this to any color you like */
+}
+
+.modal-content {
+    margin: 20px;
+    padding: 20px;
+    height: 80%; /* Adjusting for margin */
+    overflow-y: auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

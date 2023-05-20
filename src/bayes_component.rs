@@ -13,6 +13,7 @@ use web_sys::HtmlElement;
 
 use crate::ChanceComponent;
 use crate::EvidenceComponent;
+use crate::ModalComponent;
 
 use gloo_storage::{SessionStorage, Storage};
 use wasm_bindgen::JsCast;
@@ -117,6 +118,7 @@ pub enum Msg {
     Export,
     FileSelected(Option<web_sys::File>),
     FileContent(String),
+    ToggleModal,
 }
 
 #[derive(Properties, PartialEq, Eq)]
@@ -126,6 +128,7 @@ pub struct BayesComponent {
     pub data: BayesData,
     onload: Option<Closure<dyn FnMut(Event)>>,
     error_message: Option<String>,
+    is_modal_open: bool,
 }
 
 impl Component for BayesComponent {
@@ -151,6 +154,7 @@ impl Component for BayesComponent {
             data,
             onload: None,
             error_message: None,
+            is_modal_open: true,
         }
     }
 
@@ -167,6 +171,8 @@ impl Component for BayesComponent {
         let onclick_add_evidence = ctx.link().callback(move |_e: MouseEvent| Msg::AddEvidence);
         let onclick_export = ctx.link().callback(move |_e: MouseEvent| Msg::Export);
         let onclick_clear = ctx.link().callback(|_e: MouseEvent| Msg::Clear);
+
+        let toggle_modal = ctx.link().callback(|_| Msg::ToggleModal);
 
         let on_file_input_change = ctx.link().callback(|e: Event| {
             Msg::FileSelected(
@@ -244,10 +250,11 @@ impl Component for BayesComponent {
                     <div class="menu">
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="export-markdown" onclick={onclick_export}>{"Export"}</button>
+                   
                     <label class="dropzone" for="fileInput">
-                    <span>{"Load"}</span>
-                    <input type="file" accept=".md" id="fileInput" onchange={on_file_input_change} style="display: none;" />
-                </label>
+                        <span>{"Load"}</span>
+                        <input type="file" accept=".md" id="fileInput" onchange={on_file_input_change} style="display: none;" />
+                     </label>
 
                     {if let Some(ref error_message) = self.error_message {
                         html!{ <div class="invalid">{error_message}</div> }
@@ -256,6 +263,12 @@ impl Component for BayesComponent {
                     }}
                     </div>
                 </div>
+
+                <ModalComponent
+                content="yeoo"
+                is_open={self.is_modal_open}
+                on_close={toggle_modal}
+                />
 
                 <div class="main">
                     <div class="prior">
@@ -356,6 +369,9 @@ impl Component for BayesComponent {
                     self.error_message = Some(format!("Error: Invalid file format. {:?}", e));
                 }
             },
+            Msg::ToggleModal => {
+                self.is_modal_open = !self.is_modal_open;
+            }
         }
         self.data.posterior_odds =
             recalculate(self.data.prior_odds.clone(), self.data.likelihoods.clone());
