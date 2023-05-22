@@ -171,6 +171,7 @@ impl Component for BayesComponent {
         let onclick_add_evidence = ctx.link().callback(move |_e: MouseEvent| Msg::AddEvidence);
         let onclick_export = ctx.link().callback(move |_e: MouseEvent| Msg::Export);
         let onclick_clear = ctx.link().callback(|_e: MouseEvent| Msg::Clear);
+        let onclick_help = ctx.link().callback(|_e: MouseEvent| Msg::ToggleModal);
 
         let toggle_modal = ctx.link().callback(|_| Msg::ToggleModal);
 
@@ -248,9 +249,11 @@ impl Component for BayesComponent {
                 <div style="position: absolute;left: 20px;top: 20px;font-size: 2rem;width: 150px;">
                     {"Bayes App"}
                     <div class="menu">
+                    <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="export-markdown" onclick={onclick_export}>{"Export"}</button>
-                   
+
+
                     <label class="dropzone" for="fileInput">
                         <span>{"Load"}</span>
                         <input type="file" accept=".md" id="fileInput" onchange={on_file_input_change} style="display: none;" />

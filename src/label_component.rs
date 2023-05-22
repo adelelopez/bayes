@@ -112,6 +112,7 @@ impl Component for LabelComponent {
                             <input
                                 class="label-input"
                                 type="text"
+                                placeholder={ctx.props().placeholder.clone()}
                                 value={value.clone()}
                                 oninput={oninput}
                                 onblur={onblur}
@@ -122,10 +123,13 @@ impl Component for LabelComponent {
                 } else {
                     html! {
                         <>
-                            <div class="label">{value.clone()}</div>
-                            if !ctx.props().display_only {
-                            <button class="label-button-edit" onclick={onclick_edit}>{"✎"}</button>
-                            // <button class="label-button-x" onclick={onclick_delete}>{"✕"}</button>
+
+                            if ctx.props().display_only {
+                                <div class="label"  onclick={onclick_edit}>{value.clone()}</div>
+                            } else {
+                                <div class="label label-editable" onclick={onclick_edit}>{value.clone()}</div>
+                                // <button class="label-button-x" onclick={onclick_delete}>{"✕"}</button>
+
                             }
                         </>
                     }

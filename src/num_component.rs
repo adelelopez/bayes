@@ -29,6 +29,16 @@ pub struct NumComponent {
     editing: bool,
 }
 
+fn is_int_value(num: f32) -> bool {
+    let rounded = num.round();
+    (num - rounded).abs() <= std::f32::EPSILON
+}
+
+fn is_slider_value(num: f32) -> bool {
+    let rounded = (num * 10.0).round() / 10.0;
+    (num - rounded).abs() <= std::f32::EPSILON
+}
+
 impl Component for NumComponent {
     type Message = Msg;
     type Properties = NumProps;
@@ -83,8 +93,9 @@ impl Component for NumComponent {
             || ctx.props().max_value.map_or(false, |max| max < cur_val);
         let class_str = class.to_string() + if invalid { " invalid" } else { "" };
 
+        let val = ctx.props().force_value.unwrap_or(self.value) as f32;
+
         if ctx.props().display_only {
-            let val = ctx.props().force_value.unwrap_or(self.value) as f32;
             html! {
                 <div class={class_str}>
                 {format!("{:.*}", 5, val)}
@@ -97,8 +108,12 @@ impl Component for NumComponent {
                     .unwrap_or_default()
             } else if self.is_blank {
                 "".to_string()
+            } else if is_int_value(val) {
+                val.round().to_string()
+            } else if !is_slider_value(val) {
+                val.to_string()
             } else {
-                format_num::format_num!("#.1f", ctx.props().force_value.unwrap_or(self.value))
+                format_num::format_num!("#.1f", val)
             };
             html! {
                 <input ref={input_ref} class={class_str}

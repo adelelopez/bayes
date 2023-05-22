@@ -5,7 +5,7 @@ body {
     font-family: 'Atkinson Hyperlegible', sans-serif;
 }
 h1 {
-  padding: 10px;
+  text-align: center;
 }
 p {
   margin: 1px;
@@ -155,19 +155,6 @@ button.add-evidence{
 
 
 
-ol {
-  list-style-type: upper-alpha;
-  margin-left:-45px;
-
-}
-ol > li {
-    padding: 5px;
-    border-bottom: 2px solid #eee;
-}
-ol > li::marker {
-    font-size:4em;
-    display: block;  
-}
 
 label {
     margin: auto;
@@ -356,6 +343,14 @@ label {
     overflow-wrap: anywhere;
 }
 
+.label-editable:hover {
+    margin-left: 10%;
+    padding-right: 20%;
+    opacity: 50%;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
 .prior .left .label {
     font-size: 1.3em;
 }
@@ -386,7 +381,7 @@ label {
 
 .label-button-edit:hover,
 .label-button-x:hover {
-    cursor: pointer;
+cursor: pointer;
 }
 
 .label-button-edit {
@@ -620,22 +615,25 @@ button.no_button{
 .after-bar .normalized {
     transition: width 0.4s ease-in-out;
     transition-delay: 0.4s;
-}.modal {
+}
+
+.modal {
     position: fixed;
     z-index: 10;
     right: 0;
     top: 0;
-    width: 33%; /* Adjust this to control the width of your modal */
+    width: 33%;
     height: 100%;
     overflow: auto;
-    background-color: #fefefe; /* Change this to any color you like */
+    background-color: #fefefe; 
 }
 
 .modal-content {
     margin: 20px;
     padding: 20px;
-    height: 80%; /* Adjusting for margin */
+    height: 90%; 
     overflow-y: auto;
+    background-color: aliceblue;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
 }
@@ -652,4 +650,13 @@ button.no_button{
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.modal-content p{
+    font-size: 15px;
+    padding: 0 0 0 0;
+}
+
+.modal-content a {
+    color: #788fd5;
 }
