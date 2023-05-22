@@ -120,9 +120,6 @@ impl Component for EvidenceComponent {
                     class={AttrValue::from("evidence")}
                 placeholder={AttrValue::from(self.evidence.clone())}
                 onchange={&onchange_label}
-                node_ref={Some(self.label_ref.clone())}
-                focus_on_mount=true
-
                 />
                 </div>
             </div>
