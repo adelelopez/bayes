@@ -29,14 +29,14 @@ pub struct NumComponent {
     editing: bool,
 }
 
-fn is_int_value(num: f32) -> bool {
+fn is_int_value(num: f64) -> bool {
     let rounded = num.round();
-    (num - rounded).abs() <= std::f32::EPSILON
+    (num - rounded).abs() <= std::f64::EPSILON
 }
 
-fn is_slider_value(num: f32) -> bool {
+fn is_slider_value(num: f64) -> bool {
     let rounded = (num * 10.0).round() / 10.0;
-    (num - rounded).abs() <= std::f32::EPSILON
+    (num - rounded).abs() <= std::f64::EPSILON
 }
 
 impl Component for NumComponent {
@@ -93,7 +93,7 @@ impl Component for NumComponent {
             || ctx.props().max_value.map_or(false, |max| max < cur_val);
         let class_str = class.to_string() + if invalid { " invalid" } else { "" };
 
-        let val = ctx.props().force_value.unwrap_or(self.value) as f32;
+        let val = ctx.props().force_value.unwrap_or(self.value);
 
         if ctx.props().display_only {
             html! {
@@ -111,7 +111,7 @@ impl Component for NumComponent {
             } else if is_int_value(val) {
                 val.round().to_string()
             } else if !is_slider_value(val) {
-                val.to_string()
+                (val as f32).to_string()
             } else {
                 format_num::format_num!("#.1f", val)
             };
