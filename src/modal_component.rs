@@ -29,7 +29,7 @@ impl ModalComponent {
         let mut opts = RequestInit::new();
         opts.method("GET");
 
-        let request = Request::new_with_str_and_init("/tutorial/file1.md", &opts)?;
+        let request = Request::new_with_str_and_init("./tutorial/file1.md", &opts)?;
 
         let window = web_sys::window().unwrap();
         let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
@@ -68,8 +68,6 @@ impl Component for ModalComponent {
     }
 
     fn update(&mut self, ctx: &yew::Context<Self>, msg: Self::Message) -> bool {
-        log::debug!("toggers!");
-
         match msg {
             Msg::ToggleModal => {
                 self.is_open = !self.is_open;
