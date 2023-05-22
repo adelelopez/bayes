@@ -381,7 +381,7 @@ label {
 
 .label-button-edit:hover,
 .label-button-x:hover {
-cursor: pointer;
+    cursor: pointer;
 }
 
 .label-button-edit {
@@ -652,7 +652,7 @@ button.no_button{
     cursor: pointer;
 }
 
-.modal-content p{
+.modal-content p {
     font-size: 15px;
     padding: 0 0 0 0;
 }

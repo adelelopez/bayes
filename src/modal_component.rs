@@ -7,7 +7,6 @@ use yew::prelude::*;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct ModalProps {
-    pub content: String,
     pub is_open: bool,
     pub on_close: Callback<()>,
 }

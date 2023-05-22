@@ -268,7 +268,6 @@ impl Component for BayesComponent {
                 </div>
 
                 <ModalComponent
-                content="yeoo"
                 is_open={self.is_modal_open}
                 on_close={toggle_modal}
                 />
