@@ -434,6 +434,7 @@ input.label-input {
 .main {
     display: grid;
     grid-template-columns: 400px 400px 200px;
+    width: 120%;
 }
 
 .prior {
