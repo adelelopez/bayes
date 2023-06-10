@@ -9,6 +9,7 @@ use yew::prelude::*;
 mod bayes_component;
 mod chance_component;
 mod evidence_component;
+mod json_crush;
 mod label_component;
 mod modal_component;
 mod num_component;

@@ -2,12 +2,15 @@
 use crate::chance_component::percentize;
 use crate::chance_component::Kind;
 use crate::evidence_component::EvidenceCallback;
+use crate::storage::decode_bayes_data;
+use crate::storage::encode_bayes_data;
 use crate::storage::export_to_markdown;
 use crate::storage::parse_markdown;
 use crate::storage::BayesData;
 use gloo::utils::document;
 use js_sys::Array;
 use wasm_bindgen::closure::Closure;
+use wasm_bindgen::JsValue;
 use web_sys::FileReader;
 use web_sys::HtmlElement;
 
@@ -119,6 +122,9 @@ pub enum Msg {
     FileSelected(Option<web_sys::File>),
     FileContent(String),
     ToggleModal,
+    GenerateLink,
+    UpdateData(BayesData),
+    ClearUrl,
 }
 
 #[derive(Properties, PartialEq, Eq)]
@@ -129,13 +135,14 @@ pub struct BayesComponent {
     onload: Option<Closure<dyn FnMut(Event)>>,
     error_message: Option<String>,
     is_modal_open: bool,
+    _hashchange_listener: Option<Closure<dyn FnMut(web_sys::Event)>>,
 }
 
 impl Component for BayesComponent {
     type Message = Msg;
     type Properties = BayesProps;
 
-    fn create(_ctx: &yew::Context<Self>) -> Self {
+    fn create(ctx: &yew::Context<Self>) -> Self {
         let mut data = BayesData {
             hypotheses: vec!["Hypothesis A".to_string(), "Hypothesis B".to_string()],
             prior_odds: vec![1.0, 1.0],
@@ -150,11 +157,41 @@ impl Component for BayesComponent {
             }
         }
 
+        let location = web_sys::window().unwrap().location();
+        if let Ok(hash) = location.hash() {
+            if !hash.is_empty() {
+                let encoded_data = &hash[1..];
+                if let Ok(decoded_data) = decode_bayes_data(encoded_data) {
+                    data = decoded_data;
+                }
+            }
+        }
+
+        let link = ctx.link().clone();
+        let hashchange_listener = Closure::wrap(Box::new(move |_event: web_sys::Event| {
+            let url = web_sys::window().unwrap().location().href().unwrap();
+            let encoded_data = url.split('#').last().unwrap_or("");
+            let decoded_data = decode_bayes_data(encoded_data);
+
+            if let Ok(loaded_data) = decoded_data {
+                link.send_message(Msg::UpdateData(loaded_data));
+            }
+        }) as Box<dyn FnMut(web_sys::Event)>);
+
+        web_sys::window()
+            .unwrap()
+            .add_event_listener_with_callback(
+                "hashchange",
+                hashchange_listener.as_ref().unchecked_ref(),
+            )
+            .unwrap();
+
         Self {
             data,
             onload: None,
             error_message: None,
             is_modal_open: true,
+            _hashchange_listener: Some(hashchange_listener),
         }
     }
 
@@ -172,6 +209,7 @@ impl Component for BayesComponent {
         let onclick_export = ctx.link().callback(move |_e: MouseEvent| Msg::Export);
         let onclick_clear = ctx.link().callback(|_e: MouseEvent| Msg::Clear);
         let onclick_help = ctx.link().callback(|_e: MouseEvent| Msg::ToggleModal);
+        let onclick_generate_link = ctx.link().callback(|_e: MouseEvent| Msg::GenerateLink);
 
         let toggle_modal = ctx.link().callback(|_| Msg::ToggleModal);
 
@@ -251,13 +289,13 @@ impl Component for BayesComponent {
                     <div class="menu">
                     <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
+                    <button class="clear-session" onclick={onclick_generate_link}>{"Link"}</button>
                     <button class="export-markdown" onclick={onclick_export}>{"Export"}</button>
 
-
-                    <label class="dropzone" for="fileInput">
+                    <button class="export-markdown" for="fileInput">
                         <span>{"Load"}</span>
                         <input type="file" accept=".md" id="fileInput" onchange={on_file_input_change} style="display: none;" />
-                     </label>
+                     </button>
 
                     {if let Some(ref error_message) = self.error_message {
                         html!{ <div class="invalid">{error_message}</div> }
@@ -284,9 +322,16 @@ impl Component for BayesComponent {
                     </div>
 
                     {for display_evidence}
+                    {if hypotheses.is_empty() {
+                        html!(  <div style={format!("width:{}px",400)}>
+                        <button class="add-evidence" onclick={onclick_add_evidence}>{"Add Evidence"}</button>
+                        </div>)
+                    } else {
+                        html!(
                     <div class ="center" style={format!("width:{}px",200*hypotheses.len())}>
                     <button class="add-evidence" onclick={onclick_add_evidence}>{"Add Evidence"}</button>
-                    </div>
+                    </div>)
+                    }}
 
                     <div class="posterior">
                         <div class="left">
@@ -317,10 +362,12 @@ impl Component for BayesComponent {
                 for ev_idx in 0..self.data.evidence.len() {
                     self.data.likelihoods[ev_idx].push(0.5);
                 }
+                ctx.link().send_message(Msg::ClearUrl);
             }
             Msg::Prior(idx, val, hyp) => {
                 self.data.hypotheses[idx] = hyp[idx].to_string();
                 self.data.prior_odds[idx] = val[idx];
+                ctx.link().send_message(Msg::ClearUrl);
             }
             Msg::Posterior => {}
             Msg::AddEvidence => {
@@ -328,15 +375,19 @@ impl Component for BayesComponent {
                 self.data
                     .likelihoods
                     .push(vec![0.5; self.data.hypotheses.len()]);
+                ctx.link().send_message(Msg::ClearUrl);
             }
             Msg::Evidence(ev_idx, hyp_idx, new_odds) => {
                 self.data.likelihoods[ev_idx][hyp_idx] = new_odds;
+                ctx.link().send_message(Msg::ClearUrl);
             }
             Msg::EditEvidence(ev_idx, new_evidence) => {
                 self.data.evidence[ev_idx] = new_evidence;
+                ctx.link().send_message(Msg::ClearUrl);
             }
             Msg::Clear => {
                 SessionStorage::delete("bayes_component");
+                ctx.link().send_message(Msg::ClearUrl);
 
                 self.data = BayesData {
                     hypotheses: vec!["Hypothesis A".to_string(), "Hypothesis B".to_string()],
@@ -366,6 +417,7 @@ impl Component for BayesComponent {
                 Ok(parsed_data) => {
                     self.data = parsed_data;
                     self.error_message = None;
+                    ctx.link().send_message(Msg::ClearUrl);
                 }
                 Err(e) => {
                     self.error_message = Some(format!("Error: Invalid file format. {:?}", e));
@@ -373,6 +425,35 @@ impl Component for BayesComponent {
             },
             Msg::ToggleModal => {
                 self.is_modal_open = !self.is_modal_open;
+            }
+            Msg::GenerateLink => {
+                let encoded = encode_bayes_data(&self.data).unwrap();
+                let url = format!(
+                    "{}#{}",
+                    document().location().unwrap().href().unwrap(),
+                    encoded
+                );
+
+                let window = web_sys::window().unwrap();
+                let history = window.history().unwrap();
+                history
+                    .push_state_with_url(&JsValue::NULL, "", Some(&url))
+                    .unwrap();
+            }
+            Msg::UpdateData(new_data) => {
+                self.data = new_data;
+            }
+            Msg::ClearUrl => {
+                let url = web_sys::window().unwrap().location().href().unwrap();
+                if url.contains('#') && url.split('#').last().is_some() {
+                    let window = web_sys::window().unwrap();
+                    let history = window.history().unwrap();
+                    history
+                        .replace_state_with_url(&JsValue::NULL, "", Some("/"))
+                        .unwrap_or_else(|err| {
+                            log::error!("Failed to clear URL: {:?}", err);
+                        });
+                }
             }
         }
         self.data.posterior_odds =

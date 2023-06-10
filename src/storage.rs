@@ -1,13 +1,17 @@
 use crate::bayes_component::recalculate;
 use crate::chance_component::percentize;
+use crate::json_crush::{crush, uncrush};
+use base64::{decode_config, encode_config, URL_SAFE};
 use serde::{Deserialize, Serialize};
+use serde_json::from_str;
+use serde_json::to_string;
 use std::fmt;
 use std::num::ParseFloatError;
 use std::str::FromStr;
 use wasm_bindgen::JsCast;
 use web_sys::{window, Blob, BlobPropertyBag, HtmlAnchorElement};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BayesData {
     pub hypotheses: Vec<String>,
     pub prior_odds: Vec<f64>,
@@ -26,6 +30,19 @@ impl From<ParseFloatError> for MarkdownParseError {
     fn from(err: ParseFloatError) -> MarkdownParseError {
         MarkdownParseError::ParseFloat(err)
     }
+}
+
+pub fn encode_bayes_data(data: &BayesData) -> Result<String, serde_json::Error> {
+    let json = to_string(data)?;
+    let crushed = crush(&json);
+    Ok(encode_config(crushed, URL_SAFE))
+}
+
+pub fn decode_bayes_data(encoded: &str) -> Result<BayesData, Box<dyn std::error::Error>> {
+    let decoded = decode_config(encoded, URL_SAFE)?;
+    let crushed_json = String::from_utf8(decoded)?;
+    let json = uncrush(&crushed_json);
+    Ok(from_str(&json)?)
 }
 
 pub fn parse_markdown(content: &str) -> Result<BayesData, MarkdownParseError> {
