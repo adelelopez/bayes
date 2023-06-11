@@ -21,8 +21,7 @@ pub struct EvidenceProps {
 pub struct EvidenceComponent {
     pub evidence: AttrValue,
     pub likelihoods: Vec<f64>,
-    pub bayes_factor: f64,
-    pub label_ref: NodeRef,
+    pub bayes_factors: Vec<f64>,
 }
 
 pub enum Msg {
@@ -37,6 +36,18 @@ pub enum EvidenceCallback {
     LabelEdit(String),
 }
 
+pub fn normalize(odds: Vec<f64>) -> Vec<f64> {
+    let total = odds.iter().sum::<f64>();
+    odds.iter().map(|x| x / total).collect()
+}
+
+pub fn log_odds_in_db(odds: Vec<f64>) -> Vec<f64> {
+    normalize(odds)
+        .iter()
+        .map(|x| 10.0 * (x / (1.0 - x)).log(10.0))
+        .collect()
+}
+
 impl Component for EvidenceComponent {
     type Message = Msg;
     type Properties = EvidenceProps;
@@ -44,9 +55,11 @@ impl Component for EvidenceComponent {
     fn create(ctx: &yew::Context<Self>) -> Self {
         Self {
             evidence: AttrValue::from(ctx.props().label.clone()),
-            bayes_factor: 1.0,
+            bayes_factors: normalize(ctx.props().likelihoods.clone())
+                .iter()
+                .map(|x| (x / (1.0 - x)).log(10.0))
+                .collect(),
             likelihoods: ctx.props().likelihoods.clone(),
-            label_ref: NodeRef::default(),
         }
     }
 
@@ -110,6 +123,15 @@ impl Component for EvidenceComponent {
             </>
          });
 
+        // let display_log_odds = ctx.props().hypotheses.iter().enumerate().map(move |hypothesis|
+        //     html!{
+        //         <div class= {format!("e{idx}", idx=hypothesis.0)}>
+        //         <b>
+        //         { format_num::format_num!("+.1f", self.bayes_factors.clone()[hypothesis.0])}{" db"}
+        //         </b>
+        //         </div>
+        //     });
+
         let col_str = "200px ".repeat(10);
         html! {
             <div class="evidence">
@@ -121,6 +143,9 @@ impl Component for EvidenceComponent {
                 placeholder={AttrValue::from(self.evidence.clone())}
                 onchange={&onchange_label}
                 />
+            //    <div class="log-odds">
+            //    {for display_log_odds}
+            //    </div>
                 </div>
             </div>
 
@@ -143,11 +168,13 @@ impl Component for EvidenceComponent {
     fn rendered(&mut self, ctx: &yew::Context<Self>, _first_render: bool) {
         self.likelihoods = ctx.props().likelihoods.clone();
         self.evidence = AttrValue::from(ctx.props().label.clone());
+        self.bayes_factors = log_odds_in_db(self.likelihoods.clone());
     }
 
     fn changed(&mut self, ctx: &yew::Context<Self>) -> bool {
         self.likelihoods = ctx.props().likelihoods.clone();
         self.evidence = AttrValue::from(ctx.props().label.clone());
+        self.bayes_factors = log_odds_in_db(self.likelihoods.clone());
         true
     }
 
@@ -158,6 +185,7 @@ impl Component for EvidenceComponent {
         while self.likelihoods.len() < ctx.props().hypotheses.len() {
             self.likelihoods.push(0.5);
         }
+        self.bayes_factors = log_odds_in_db(self.likelihoods.clone());
 
         match msg {
             Msg::EditLabel(val) => {
@@ -170,6 +198,7 @@ impl Component for EvidenceComponent {
 
             Msg::Likelihood(hyp_idx, new_odds) => {
                 self.likelihoods[hyp_idx] = new_odds;
+                self.bayes_factors = log_odds_in_db(self.likelihoods.clone());
                 ctx.props()
                     .onchange
                     .emit(EvidenceCallback::OddsUpdate(hyp_idx, new_odds));

@@ -104,6 +104,14 @@ impl Component for LabelComponent {
             None => self.input_ref.clone(),
         };
 
+        let smaller_class = if value.len() > 30
+            || (value.len() > 15 && ctx.props().class.to_string() != "evidence")
+        {
+            " smaller"
+        } else {
+            ""
+        };
+
         html! {
             <div class={ctx.props().class.to_string()}>
                 {if self.edit_mode {
@@ -125,11 +133,10 @@ impl Component for LabelComponent {
                         <>
 
                             if ctx.props().display_only {
-                                <div class="label"  onclick={onclick_edit}>{value.clone()}</div>
+                                <div class={format!("label {}", smaller_class)}  onclick={onclick_edit}>{value.clone()}</div>
                             } else {
-                                <div class="label label-editable" onclick={onclick_edit}>{value.clone()}</div>
+                                <div class={format!("label {} label-editable", smaller_class)} onclick={onclick_edit}>{value.clone()}</div>
                                 // <button class="label-button-x" onclick={onclick_delete}>{"✕"}</button>
-
                             }
                         </>
                     }
