@@ -81,6 +81,10 @@ button {
     font-size: 1.2rem;
     color: #333;
     cursor: pointer;
+    /* border-bottom: 1px solid #999;
+    border-right: 1px solid #888;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd; */
 }
 
 button.add-hypothesis{
@@ -98,7 +102,7 @@ button.add-evidence{
     grid-column: 1/3;
     width: 100%;
     margin-bottom: 3px;
-    margin-top: 8px
+    margin-top: 5px
 }
 
 
@@ -134,12 +138,12 @@ button.add-evidence{
 
 
 .prior .percent button{
-    padding-top: 3.3px;
+    padding-top: 3.2px;
     /* padding-bottom: 2px; */
-    /* padding-right: 5.5px; */
+    padding-right: 5.5px;
     cursor: pointer;
     width: 30px;
-    /* margin-left: 0.7px; */
+    margin-left: 0.7px;
     /* position: absolute;
     right: 4px; */
     font-size: 0.75em;
@@ -163,6 +167,8 @@ label {
     font-size: 0.5em;
     padding-left: 10%;
 }
+
+
 
 .container {
   margin: 10px auto 0;
@@ -313,11 +319,33 @@ label {
 }
 
 
+.e0 {
+    color: #f9868a;
+}
+
+.e1 {
+    color: #788fd5;
+}
+
+.e2 {
+    /* color: #fae0a2; */
+    color: #eacd31;
+}
+
+.e3 {
+    color:  #9f90c9;
+}
+
+.e4 {
+    color: #a2cca4;
+}
+
 .hyp {
     text-align: center;
     font-size: 1.3em;
     width: 200px;
-    padding-top: 5px;
+    padding-top: 2px;
+    padding-bottom: 3px;
     display: flex;
     position: relative;
 }
@@ -344,6 +372,11 @@ label {
     padding-top: 5px;
     overflow-wrap: anywhere;
 }
+
+.smaller  {
+    font-size: 0.7em;
+}
+
 
 .label-editable:hover {
     margin-left: 10%;
@@ -392,6 +425,9 @@ label {
 
 input.label-input {
     width: 68%;
+}
+
+.evidence input.label-input {
     margin-left: 10%;
 }
 
@@ -401,7 +437,7 @@ input.label-input {
     height: 100%;
     position: relative;
     justify-content: center; 
-  align-items: center; 
+    align-items: center; 
 }
 
 .d1 {
@@ -447,7 +483,7 @@ input.label-input {
 .evidence {
     display: grid;
     grid-template-columns: 400px 400px 200px;
-    padding-bottom: 5px;
+    padding-bottom: 3px;
 }
 
 
@@ -490,10 +526,10 @@ input[type=file] {
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 1.2rem;
     color: #333;
-    border-top: 1px solid #999;
-    border-left: 1px solid #888;
-    border-bottom: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    /* border-bottom: 1px solid #999;
+    border-right: 1px solid #888;
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd; */
     margin-top: 5px;
     box-sizing: border-box;
 }
@@ -658,3 +694,80 @@ button.no_button{
 .modal-content a {
     color: #788fd5;
 }
+
+.log-odds {
+    position: absolute;
+    right: 5px;
+    text-align: right;
+    top: 2px;
+    font-size: 0.8rem;
+}
+
+/* body {
+    background-color: #111;
+}
+
+.dark.container {
+    background-color: #111;
+}
+
+.dark .modal-content {
+    color: white;
+    background-color: darkblue;
+}
+
+.dark .c0 {
+    background-color: #542c2d;
+}
+
+.dark .d0 .c0, .dark .d0.c1{
+    background-color: #542c2d;
+} */
+
+/* 
+.d0 .c1, .d0.c1 {
+    background-color: #f9868a66;
+    grid-column: 2;
+}
+
+.d1 .c0, .d1.c0{
+    background-color: #788fd5;
+    grid-column: 4;
+}
+
+.d1 .c1, .d1.c1 {
+    background-color: #788fd566;
+    grid-column: 5;
+}
+
+
+.d2 .c0, .d2.c0{
+    background-color: #fae0a2;
+    grid-column: 6;
+}
+
+.d2 .c1, .d2.c1{
+    background-color: #fae0a266;
+    grid-column: 7;
+}
+
+
+.d3 .c0, .d3.c0{
+    background-color: #9f90c9;
+    grid-column: 8;
+}
+
+.d3 .c1, .d3.c1{
+    background-color: #9f90c966;
+    grid-column: 9;
+}
+
+.d4 .c0, .d4.c0{
+    background-color: #a2cca4;
+    grid-column: 8;
+}
+
+.d4 .c1, .d4.c1{
+    background-color: #a2cca466;
+    grid-column: 9;
+} */
