@@ -284,25 +284,25 @@ impl Component for BayesComponent {
 
         html! {
             <div class="container" onmousemove={onmousemove}>
-                <div style="position: absolute;left: 20px;top: 20px;font-size: 2rem;width: 150px;">
-                    {"Bayes App"}
+
                     <div class="menu">
+                    {"Bayes App"}
                     <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="clear-session" onclick={onclick_generate_link}>{"Link"}</button>
                     <button class="export-markdown" onclick={onclick_export}>{"Export"}</button>
 
-                    <button class="export-markdown" for="fileInput">
+                    <label class="dropzone" for="fileInput">
                         <span>{"Load"}</span>
                         <input type="file" accept=".md" id="fileInput" onchange={on_file_input_change} style="display: none;" />
-                     </button>
+                     </label>
 
                     {if let Some(ref error_message) = self.error_message {
                         html!{ <div class="invalid">{error_message}</div> }
                     } else {
                         html!{}
                     }}
-                    </div>
+           
                 </div>
 
                 <ModalComponent

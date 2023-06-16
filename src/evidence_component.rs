@@ -134,8 +134,7 @@ impl Component for EvidenceComponent {
 
         let col_str = "200px ".repeat(10);
         html! {
-            <div class="evidence">
-
+            <div class="evidence-item">
             <div class = "left">
                 <div class = "ev">
                 <LabelComponent
@@ -149,9 +148,11 @@ impl Component for EvidenceComponent {
                 </div>
             </div>
 
+            <div class="all-sliders">
             <div class={css!(r#"display: grid; grid-template-columns: ${cols}; align-items: center;"#, cols=col_str)}>
 
             {for display_hypothesis_evidence}
+            </div>
             </div>
 
 
@@ -160,7 +161,6 @@ impl Component for EvidenceComponent {
             {for display_after_bar}
             </div>
             </div>
-
             </div>
         }
     }
