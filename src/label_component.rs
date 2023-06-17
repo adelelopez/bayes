@@ -133,7 +133,7 @@ impl Component for LabelComponent {
                         <>
 
                             if ctx.props().display_only {
-                                <div class={format!("label {}", smaller_class)}  onclick={onclick_edit}>{value.clone()}</div>
+                                <div class={format!("label {}", smaller_class)}>{value.clone()}</div>
                             } else {
                                 <div class={format!("label {} label-editable", smaller_class)} onclick={onclick_edit}>{value.clone()}</div>
                                 // <button class="label-button-x" onclick={onclick_delete}>{"✕"}</button>

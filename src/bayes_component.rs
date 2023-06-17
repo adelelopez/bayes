@@ -263,7 +263,7 @@ impl Component for BayesComponent {
             }
         };
 
-        let hypotheses: _ = self
+        let hypotheses = self
             .data
             .hypotheses
             .clone()

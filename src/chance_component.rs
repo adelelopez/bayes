@@ -2,14 +2,8 @@
 use crate::LabelComponent;
 use crate::NumComponent;
 use is_close::all_close;
-use stylist::css;
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
-
-// pub fn normalize(odds: Vec<f64>) -> Vec<f64> {
-//     let total = odds.iter().sum::<f64>();
-//     odds.iter().map(|x| x / total).collect()
-// }
 
 pub fn percentize(odds: Vec<f64>) -> Vec<f64> {
     let total = odds.iter().sum::<f64>();
@@ -148,15 +142,17 @@ impl Component for ChanceComponent {
         };
         let col_str = format!("{}px", cols * 100);
 
+        let style = format!("display: grid; width: {};", col_str);
+
         html! {
             <div style="display:flex">
             <div>
-            <div class={css!(r#"display: grid; width: ${cols};"#, cols=col_str)}>
+            <div style={style}>
             {for display_hypotheses}
             {for display_odds}
             </div>
 
-            <div class={css!(r#"display: flex;"#)} style={format!("height: 20px; width:{}px",100*cols)}>
+            <div  style={format!("display: flex; height: 20px; width:{}px",100*cols)}>
             {for display_bar}
             </div>
             </div>

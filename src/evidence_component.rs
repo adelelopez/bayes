@@ -4,8 +4,6 @@ use crate::LabelComponent;
 use crate::NumComponent;
 use web_sys::HtmlInputElement;
 
-use stylist::css;
-
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
 
@@ -149,7 +147,7 @@ impl Component for EvidenceComponent {
             </div>
 
             <div class="all-sliders">
-            <div class={css!(r#"display: grid; grid-template-columns: ${cols}; align-items: center;"#, cols=col_str)}>
+            <div style={format!(r#"display: grid; grid-template-columns: {}; align-items: center;"#, col_str)}>
 
             {for display_hypothesis_evidence}
             </div>
