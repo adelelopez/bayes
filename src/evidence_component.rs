@@ -4,8 +4,6 @@ use crate::LabelComponent;
 use crate::NumComponent;
 use web_sys::HtmlInputElement;
 
-use stylist::css;
-
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
 
@@ -134,8 +132,7 @@ impl Component for EvidenceComponent {
 
         let col_str = "200px ".repeat(10);
         html! {
-            <div class="evidence">
-
+            <div class="evidence-item">
             <div class = "left">
                 <div class = "ev">
                 <LabelComponent
@@ -149,9 +146,11 @@ impl Component for EvidenceComponent {
                 </div>
             </div>
 
-            <div class={css!(r#"display: grid; grid-template-columns: ${cols}; align-items: center;"#, cols=col_str)}>
+            <div class="all-sliders">
+            <div style={format!(r#"display: grid; grid-template-columns: {}; align-items: center;"#, col_str)}>
 
             {for display_hypothesis_evidence}
+            </div>
             </div>
 
 
@@ -160,7 +159,6 @@ impl Component for EvidenceComponent {
             {for display_after_bar}
             </div>
             </div>
-
             </div>
         }
     }
