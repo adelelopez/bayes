@@ -1,26 +1,31 @@
 :root {
     --background-color: #fff;
-    --text-color: #333;
-    --input-border-color: #ddd;
-    --input-text-color: #111;
-    --input-focus-color: #444;
+    --text-color: #111;
+    --input-border-color: #ddd; 
+    --close-color: #aaa;
     --button-background: aliceblue;
     --button-faded-background: #f0fbff55;
     --invalid-color: #f9868a;
-    --bayes-red: #f9868a;
-    --bayes-blue: #788fd5;
-    --bayes-yellow: #fae0a2;
-    --bayes-purple: #9f90c9;
-    --bayes-green: #a2cca4;
-    --bayes-yellow-high-contrast: #eacd31;
+    --link-color: #788fd5;
+    --bayes-0: #f9868a;
+    --bayes-0-discard: #f9868a66;
+    --bayes-1: #788fd5;
+    --bayes-1-discard:  #788fd566;
+    --bayes-2: #fae0a2;
+    --bayes-2-discard: #fae0a266;
+    --bayes-3: #9f90c9;
+    --bayes-3-discard: #9f90c966;
+    --bayes-4: #a2cca4;
+    --bayes-4-discard: #a2cca466;
+    --bayes-2-high-contrast: #eacd31;
     --label-background: rgb(255, 244, 231);
     --triangle-color: #557;
 }
 
 /* General Styles */
 body {
-    background: #fff;
-    color: #333;
+    background: var(--background-color);
+    color: var(--text-color);
     font-family: 'Atkinson Hyperlegible', sans-serif;
 }
 
@@ -33,13 +38,10 @@ body {
     display: grid;
 }
 
-
-/* Headings */
-h1, h3 {
+h1, h2, h3 {
     text-align: center;
 }
 
-/* Paragraphs */
 p {
     font-size: 1.8rem;
     margin: 1px;
@@ -50,10 +52,10 @@ p {
 /* Inputs */
 input[type="text"] {
     align-self: center;
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--background-color);
+    border: 1px solid var(--input-border-color);
     border-radius: 6px;
-    color: #111;
+    color: var(--text-color);
     display: inline-flex;
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 18px;
@@ -69,7 +71,7 @@ input[type="text"] {
 }
 
 input[type="text"]:focus {
-    color: #444;
+    color: var(--text-color);
 }
 
 input.odds {
@@ -77,7 +79,7 @@ input.odds {
 }
 
 input.hypothesis, input.evidence {
-    border: 1px solid #ddd;
+    border: 1px solid var(--input-border-color);
     display: inline-flex;
     float: left;
     font-size: 1.5em;
@@ -104,12 +106,13 @@ input[type=file] {
 
 /* Buttons */
 button {
-    background: aliceblue;
+    background: var(--button-background);
     border-width: 0px;
-    color: #333;
+    color: var(--text-color);
     cursor: pointer;
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 1.2rem;
+    /* border-radius: 15px; */
 }
 
 button:hover {
@@ -117,7 +120,7 @@ button:hover {
 }
 
 button.add-hypothesis {
-    background: aliceblue;
+    background: var(--button-background);
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 4rem;
     margin-left: 8px;
@@ -125,7 +128,7 @@ button.add-hypothesis {
 }
 
 button.add-evidence {
-    background: aliceblue;
+    background: var(--button-background);
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 1.7rem;
     grid-column: 1/3;
@@ -137,29 +140,29 @@ button.add-evidence {
 
 .prior .percent button, .evidence .percent button {
     opacity: 50%;
-    color: #0004;
-    background: #f0fbff55;
+    color: var(--text-color);
+    background: var(--button-faded-background);
     cursor: pointer;
-    border: 1px;
-    margin-left: 0.7px;
-    padding-right: 5.5px;
-    padding-top: 3.2px;
-    width: 30px;
-    font-size: 0.75em;
+    /* border: 1px; */
+    padding-left: 1px;
+    padding-right: 1px;
+    width: 32px;
+    font-size: 24px;
+    border-radius: 16px;
 }
 
 
 
 .prior .percent button:hover, .evidence .percent button:hover {
     opacity: 100%;
-    color: black;
+    color: var(--text-color);
 }
 
 
 
 button.no_button {
     border: none;
-    color: black !important;
+    color: var(--text-color) !important;
     opacity: 100% !important;
     background: transparent !important;
     cursor: default !important;
@@ -167,7 +170,11 @@ button.no_button {
 
 .menu {
     position: absolute;
-    left: 20px;top: 20px;font-size: 2rem;width: 150px;
+    left: 20px;
+    top: 20px;
+    font-size: 2rem;
+    text-align: center;
+    width: 160px;
     
 }
 
@@ -187,7 +194,7 @@ button.no_button {
 }
 
 .close-button {
-    color: #aaa;
+    color: var(--close-color);
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -195,7 +202,7 @@ button.no_button {
 
 .close-button:hover,
 .close-button:focus {
-    color: black;
+    color: var(--text-color);
     cursor: pointer;
     text-decoration: none;
 }
@@ -286,7 +293,7 @@ label {
 
 /* Percent */
 .percent {
-    border: #111;
+    border: var(--text-color);
     display: inline;
 }
 
@@ -329,104 +336,103 @@ label {
 /* Add the remaining styles here... */
 /* Grid Columns */
 .c0 {
-    background-color: #f9868a;
+    background-color: var(--bayes-0);
     font-size: 1.75rem;
     grid-column: 1 / span 2;
 }
 
 .c1 {
-    background-color: #788fd5;
+    background-color: var(--bayes-1);
     font-size: 1.75rem;
     grid-column: 3 / span 2;
 }
 
 .c2 {
-    background-color: #fae0a2;
+    background-color: var(--bayes-2);
     font-size: 1.75rem;
     grid-column: 5 / span 2;
 }
 
 .c3 {
-    background-color: #9f90c9;
+    background-color: var(--bayes-3);
     font-size: 1.75rem;
     grid-column: 7 / span 2;
 }
 
 .c4 {
-    background-color: #a2cca4;
+    background-color: var(--bayes-4);
     font-size: 1.75rem;
     grid-column: 9 / span 2;
 }
 
 .d0 .c0 {
-    background-color: #f9868a;
+    background-color: var(--bayes-0);
     grid-column: 1;
 }
 
 .d0 .c1, .d0.c1 {
-    background-color: #f9868a66;
+    background-color: var(--bayes-0-discard);
     grid-column: 2;
 }
 
 .d1 .c0, .d1.c0 {
-    background-color: #788fd5;
+    background-color: var(--bayes-1);
     grid-column: 4;
 }
 
 .d1 .c1, .d1.c1 {
-    background-color: #788fd566;
+    background-color: var(--bayes-1-discard);
     grid-column: 5;
 }
 
 .d2 .c0, .d2.c0 {
-    background-color: #fae0a2;
+    background-color:var(--bayes-2);
     grid-column: 6;
 }
 
 .d2 .c1, .d2.c1 {
-    background-color: #fae0a266;
+    background-color: var(--bayes-2-discard);
     grid-column: 7;
 }
 
 .d3 .c0, .d3.c0 {
-    background-color: #9f90c9;
+    background-color: var(--bayes-3);
     grid-column: 8;
 }
 
 .d3 .c1, .d3.c1 {
-    background-color: #9f90c966;
+    background-color: var(--bayes-3-discard);
     grid-column: 9;
 }
 
 .d4 .c0, .d4.c0 {
-    background-color: #a2cca4;
+    background-color: var(--bayes-4);
     grid-column: 8;
 }
 
 .d4 .c1, .d4.c1 {
-    background-color: #a2cca466;
+    background-color: var(--bayes-4-discard);
     grid-column: 9;
 }
 
-/* Colors */
 .e0 {
-    color: #f9868a;
+    color: var(--bayes-0);
 }
 
 .e1 {
-    color: #788fd5;
+    color: var(--bayes-1);
 }
 
 .e2 {
-    color: #eacd31;
+    color: var(--bayes-2-high-contrast);
 }
 
 .e3 {
-    color:  #9f90c9;
+    color: var(--bayes-3);
 }
 
 .e4 {
-    color: #a2cca4;
+    color:var(--bayes-4);
 }
 
 /* Text Alignment */
@@ -441,7 +447,7 @@ label {
 }
 
 .ev {
-    background-color: rgb(255, 244, 231);
+    background-color: var(--label-background);
     font-size: 1.3em;
     position: relative;
     width: 100%;
@@ -450,7 +456,7 @@ label {
 /* Grid Layout */
 .main, .prior, .evidence-item, .all-sliders, .posterior {
     display: grid;
-    grid-template-columns: 400px 400px 200px;
+    grid-template-columns: 370px 400px 200px;
     width: 120%;
 }
 
@@ -484,13 +490,13 @@ label {
 /* Dropzone */
 .dropzone {
     align-items: center;
-    background: aliceblue;
+    background: var(--button-background);
     /* border-bottom: 1px solid #ddd;
     border-left: 1px solid #888;
     border-right: 1px solid #ddd;
     border-top: 1px solid #999; */
     box-sizing: border-box;
-    color: #333;
+    color: var(--text-color);
     cursor: pointer;
     display: inline-flex;
     font-family: 'Atkinson Hyperlegible', sans-serif;
@@ -513,24 +519,24 @@ label {
 }
 
 .invalid {
-    color: #f9868a;
+    color: var(--invalid-color);
     font-size: 0.75em;
 }
 
 /* Modal */
 .modal {
-    background-color: white;
+    background-color: var(--background-color);
     height: 100%;
     overflow: auto;
     position: fixed;
     right: 0;
     top: 0;
-    width: 33%;
+    width: 35%;
     z-index: 10;
 }
 
 .modal-content {
-    background-color: rgb(255, 244, 231);
+    background-color: var(--label-background);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     height: 90%;
     margin: 20px;
@@ -544,7 +550,7 @@ label {
 }
 
 .modal-content a {
-    color: #788fd5;
+    color: var(--link-color);
 }
 
 /* Bar */
@@ -578,13 +584,24 @@ label {
 }
 
 .triangle-top::after {
-    border-top: 8px solid #557;
+    border-top: 8px solid var(--triangle-color);
     top: 0px;
 }
 
 .triangle-bot::after {
-    border-bottom: 8px solid #557;
+    border-bottom: 8px solid var(--triangle-color);
     bottom: 0px;
+}
+
+.before-bar {
+    display: flex;
+    height: 100%;
+    left: 0;
+    overflow: hidden;
+    position: relative;
+    top: 0;
+    width: 100%;
+    z-index: 1;
 }
 
 
@@ -623,8 +640,8 @@ label {
 .percent-symbol {
     display: flex;
     position: absolute;
-    right: 4px;
-    top: 28px;
+    right: 3px;
+    top: 25px;
     z-index: 5;
 }
 
@@ -661,18 +678,6 @@ label {
     width: 100%;
 }
 
-/* Before Bar */
-.before-bar {
-    display: flex;
-    height: 100%;
-    left: 0;
-    overflow: hidden;
-    position: relative;
-    top: 0;
-    width: 100%;
-    z-index: 1;
-}
-
 /* After Bar */
 .after-bar {
     display: flex;
@@ -685,15 +690,6 @@ label {
     z-index: 1;
 }
 
-/* Prior Percent Button */
-.prior .percent button {
-    cursor: pointer;
-    font-size: 0.75em;
-    margin-left: 0.7px;
-    padding-right: 5.5px;
-    padding-top: 3.2px;
-    width: 30px;
-}
 
 /* Evidence Percent Button */
 .evidence .percent button {
@@ -770,12 +766,19 @@ input.label-input {
         margin-right: auto;
     }
 
+    button.add-evidence {
+        margin-top: 8px;
+        /* font-size: 2rem; */
+    }
+
     .add-hypothesis {
         display:none;
     }
 
     .menu {
-        margin-top: 20px;
+        border-top: 1px solid var(--input-border-color);
+        margin-top: 50px;
+        padding-top: 20px;
         top: auto;
         left: auto;
         width: 400px;
@@ -846,5 +849,29 @@ input.label-input {
     .after-bar, .center {
         width: 100% !important;
     }
+}
 
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #192744;
+        --text-color: #e2e9ee;
+        --input-border-color: #2e3548;
+        --close-color: #90adc2;
+        --button-background: #253865;
+        --bayes-0: #b06273;
+        --bayes-0-discard: #d5556866;
+        --bayes-1: #486f99;
+        --bayes-1-discard: #486f9966;
+        --bayes-2: #b8a077;
+        --bayes-2-discard: #b8a07766;
+        --bayes-3: #669db7;
+        --bayes-3: #63699c;
+        --bayes-3-discard: #63699c66;
+        --bayes-4: #478c95;
+        --bayes-4-discard: #478c9566;
+        --label-background: #38466776;
+        --link-color: #669db7; 
+        --triangle-color: #e2e9ee;
+    }
 }

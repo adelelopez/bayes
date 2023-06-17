@@ -147,7 +147,7 @@ impl Component for BayesComponent {
             hypotheses: vec!["Hypothesis A".to_string(), "Hypothesis B".to_string()],
             prior_odds: vec![1.0, 1.0],
             posterior_odds: vec![50.0, 50.0],
-            evidence: vec!["<evidence>".to_string()],
+            evidence: vec!["Evidence 1".to_string()],
             likelihoods: vec![vec![0.5, 0.5]],
         };
 
@@ -284,9 +284,8 @@ impl Component for BayesComponent {
 
         html! {
             <div class="container" onmousemove={onmousemove}>
-
                     <div class="menu">
-                    {"Bayes App"}
+                    {"Bayes Calc"}
                     <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="clear-session" onclick={onclick_generate_link}>{"Link"}</button>
@@ -302,7 +301,6 @@ impl Component for BayesComponent {
                     } else {
                         html!{}
                     }}
-           
                 </div>
 
                 <ModalComponent
@@ -371,7 +369,9 @@ impl Component for BayesComponent {
             }
             Msg::Posterior => {}
             Msg::AddEvidence => {
-                self.data.evidence.push("<evidence>".to_string());
+                self.data
+                    .evidence
+                    .push(format!("Evidence {}", self.data.evidence.len() + 1));
                 self.data
                     .likelihoods
                     .push(vec![0.5; self.data.hypotheses.len()]);
@@ -393,7 +393,7 @@ impl Component for BayesComponent {
                     hypotheses: vec!["Hypothesis A".to_string(), "Hypothesis B".to_string()],
                     prior_odds: vec![1.0, 1.0],
                     posterior_odds: vec![50.0, 50.0],
-                    evidence: vec!["<evidence>".to_string()],
+                    evidence: vec!["Evidence 1".to_string()],
                     likelihoods: vec![vec![0.5, 0.5]],
                 };
             }
