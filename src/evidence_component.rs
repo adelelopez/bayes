@@ -71,6 +71,19 @@ impl Component for EvidenceComponent {
                 .callback(move |new_odds: f64| Msg::Likelihood(hyp_idx, new_odds * 0.01))
         };
 
+        let ontouchmove = move |hyp_idx: usize| {
+            ctx.link().callback(move |e: TouchEvent| {
+                e.prevent_default();
+                let input_el: HtmlInputElement = e.target_unchecked_into();
+                let val_str = input_el.value();
+
+                match val_str.parse::<f64>() {
+                    Ok(val) => Msg::Likelihood(hyp_idx, val),
+                    Err(_) => Msg::DoNothing,
+                }
+            })
+        };
+
         let onslide = move |hyp_idx: usize| {
             ctx.link().callback(move |e: InputEvent| {
                 let input_el: HtmlInputElement = e.target_unchecked_into();
@@ -105,7 +118,7 @@ impl Component for EvidenceComponent {
                 force_value={Some(self.likelihoods[hypotheses.0]*100.0)} class={AttrValue::from("like")}
                 placeholder={AttrValue::from("50")} onchange={&onchange_odds(hypotheses.0)}
                 />
-                <input type="range" min=0.0 max=1.0 step={0.001} value={AttrValue::from((self.likelihoods[hypotheses.0]).to_string())} class="slider" oninput={onslide(hypotheses.0)} />
+                <input type="range" min=0.0 max=1.0 step={0.001} value={AttrValue::from((self.likelihoods[hypotheses.0]).to_string())} class="slider" ontouchmove={ontouchmove(hypotheses.0)} oninput={onslide(hypotheses.0)} />
                 <div class="before-bar">
                     <div class={"c0"} style={format!("width:{}%", 100.0*self.likelihoods[hypotheses.0])}>
                     </div>

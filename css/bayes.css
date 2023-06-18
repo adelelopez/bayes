@@ -29,6 +29,12 @@ body {
     font-family: 'Atkinson Hyperlegible', sans-serif;
 }
 
+.menu a {
+    color: var(--text-color);
+    text-decoration: solid;
+    padding-bottom: 7px;
+}
+
 .container {
     margin: 10px auto 0;
     margin-left: 200px;
@@ -607,18 +613,20 @@ label {
 
 .slider {
     appearance: none;
+    /* display: none; */
     background: transparent;
     bottom: 0;
-    height: 100%;
+    height: 100% !important;
     position: absolute;
     width: 100%;
     z-index: 2;
-    -webkit-appearance: none;
+    -webkit-appearance: none !important;
 }
 
 .slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
     appearance: none;
-    background: none;
+    display: none;
+    background: transparent;
     border: none;
     cursor: pointer;
     height: 100%;
@@ -791,6 +799,7 @@ input.label-input {
         margin-right: auto;
     }
     .modal {
+        width: auto;
         display: none;
     }
     .prior, .posterior {
@@ -848,6 +857,13 @@ input.label-input {
 
     .after-bar, .center {
         width: 100% !important;
+    }
+}
+
+@media (max-width: 400px) {
+    body {
+        transform: scale(0.9);
+        transform-origin: center;
     }
 }
 
