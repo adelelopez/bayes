@@ -630,6 +630,9 @@ function __wbg_get_imports() {
         const ret = getObject(arg0).cancelBubble;
         return ret;
     };
+    imports.wbg.__wbg_preventDefault_24104f3f0a54546a = function(arg0) {
+        getObject(arg0).preventDefault();
+    };
     imports.wbg.__wbg_href_d62a28e4fc1ab948 = function() { return handleError(function (arg0, arg1) {
         const ret = getObject(arg1).href;
         const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
@@ -839,20 +842,20 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper153 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper154 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 6, __wbg_adapter_22);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper154 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbindgen_closure_wrapper155 = function(arg0, arg1, arg2) {
         const ret = makeMutClosure(arg0, arg1, 6, __wbg_adapter_25);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper2040 = function(arg0, arg1, arg2) {
-        const ret = makeClosure(arg0, arg1, 828, __wbg_adapter_28);
+    imports.wbg.__wbindgen_closure_wrapper2046 = function(arg0, arg1, arg2) {
+        const ret = makeClosure(arg0, arg1, 833, __wbg_adapter_28);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper2141 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 868, __wbg_adapter_31);
+    imports.wbg.__wbindgen_closure_wrapper2147 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 873, __wbg_adapter_31);
         return addHeapObject(ret);
     };
 
@@ -895,7 +898,7 @@ async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
     if (typeof input === 'undefined') {
-        input = new URL('bayes-calc-8f34412fc1c503c4_bg.wasm', import.meta.url);
+        input = new URL('bayes-calc-68497f80c255f720_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
