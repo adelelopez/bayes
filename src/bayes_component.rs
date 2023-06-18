@@ -285,7 +285,7 @@ impl Component for BayesComponent {
         html! {
             <div class="container" onmousemove={onmousemove}>
                     <div class="menu">
-                    {"Bayes Calc"}
+                    <a href="">{"Bayes Calc"}</a>
                     <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="clear-session" onclick={onclick_generate_link}>{"Link"}</button>
