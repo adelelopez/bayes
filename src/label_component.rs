@@ -6,19 +6,26 @@ pub enum Msg {
     SetInput(AttrValue),
     Blur,
     EditMode,
-    // Delete,
+    Delete,
 }
 
 #[derive(Properties, PartialEq)]
 pub struct LabelProps {
     pub placeholder: AttrValue,
     pub class: AttrValue,
-    pub onchange: Callback<String>,
+    pub onchange: Callback<LabelCallback>,
     #[prop_or(false)]
     pub display_only: bool,
     #[prop_or(false)]
     pub focus_on_mount: bool,
     pub node_ref: Option<NodeRef>,
+    #[prop_or(false)]
+    pub deleteable: bool,
+}
+
+pub enum LabelCallback {
+    Delete,
+    LabelEdit(String),
 }
 
 pub struct LabelComponent {
@@ -61,7 +68,9 @@ impl Component for LabelComponent {
         match msg {
             Msg::SetInput(value) => {
                 self.value = value.clone();
-                ctx.props().onchange.emit(value.to_string());
+                ctx.props()
+                    .onchange
+                    .emit(LabelCallback::LabelEdit(value.to_string()));
                 true
             }
             Msg::Blur => {
@@ -72,10 +81,11 @@ impl Component for LabelComponent {
                 self.edit_mode = true;
                 self.should_focus = true;
                 true
-            } // Msg::Delete => {
-              //     self.value = "".into();
-              //     true
-              // }
+            }
+            Msg::Delete => {
+                ctx.props().onchange.emit(LabelCallback::Delete);
+                true
+            }
         }
     }
 
@@ -95,7 +105,7 @@ impl Component for LabelComponent {
 
         let onblur = ctx.link().callback(|_: FocusEvent| Msg::Blur);
         let onclick_edit = ctx.link().callback(|_: MouseEvent| Msg::EditMode);
-        // let onclick_delete = ctx.link().callback(|_: MouseEvent| Msg::Delete);
+        let onclick_delete = ctx.link().callback(|_: MouseEvent| Msg::Delete);
 
         let value = self.value.clone();
 
@@ -136,7 +146,9 @@ impl Component for LabelComponent {
                                 <div class={format!("label {}", smaller_class)}>{value.clone()}</div>
                             } else {
                                 <div class={format!("label {} label-editable", smaller_class)} onclick={onclick_edit}>{value.clone()}</div>
-                                // <button class="label-button-x" onclick={onclick_delete}>{"✕"}</button>
+                                if ctx.props().deleteable {
+                                <button class="label-button-x" onclick={onclick_delete}>{"✕"}</button>
+                                }
                             }
                         </>
                     }

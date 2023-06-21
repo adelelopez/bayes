@@ -1,5 +1,6 @@
 // bayes_component.rs
 use crate::chance_component::percentize;
+use crate::chance_component::ChanceCallback;
 use crate::chance_component::Kind;
 use crate::evidence_component::EvidenceCallback;
 use crate::storage::decode_bayes_data;
@@ -125,6 +126,8 @@ pub enum Msg {
     GenerateLink,
     UpdateData(BayesData),
     ClearUrl,
+    DeleteHypothesis(usize),
+    DeleteEvidence(usize),
 }
 
 #[derive(Properties, PartialEq, Eq)]
@@ -196,12 +199,13 @@ impl Component for BayesComponent {
     }
 
     fn view(&self, ctx: &yew::Context<Self>) -> Html {
-        let onchange_prior = ctx
-            .link()
-            .callback(move |(u, e, h): (usize, Vec<f64>, Vec<AttrValue>)| Msg::Prior(u, e, h));
-        let onchange_posterior = ctx
-            .link()
-            .callback(move |(_, _, _): (usize, Vec<f64>, Vec<AttrValue>)| Msg::Posterior);
+        let onchange_prior =
+            ctx.link()
+                .callback(move |chance_msg: ChanceCallback| match chance_msg {
+                    ChanceCallback::EditHypothesis(u, e, h) => Msg::Prior(u, e, h),
+                    ChanceCallback::Delete(u) => Msg::DeleteHypothesis(u),
+                });
+        let onchange_posterior = ctx.link().callback(move |_: ChanceCallback| Msg::Posterior);
 
         let onchange_add_hypothesis = ctx.link().callback(|_e: bool| Msg::AddHypothesis);
 
@@ -227,6 +231,7 @@ impl Component for BayesComponent {
                         Msg::Evidence(ev_idx, hyp_idx, new_odds)
                     }
                     EvidenceCallback::LabelEdit(label) => Msg::EditEvidence(ev_idx, label),
+                    EvidenceCallback::Delete => Msg::DeleteEvidence(ev_idx),
                 })
         };
 
@@ -279,13 +284,14 @@ impl Component for BayesComponent {
                 label={ev.1.clone()}
                 onchange={&onchange_evidence(ev.0)}
                 likelihoods = {self.data.likelihoods[ev.0].clone()}
+                last = {ev.0 == self.data.evidence.len() -1 }
                 />
             });
 
         html! {
             <div class="container" onmousemove={onmousemove}>
                     <div class="menu">
-                    <a href="">{"Bayes Calc"}</a>
+                    <b><a href="">{"bayescalc.io"}</a></b>
                     <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="clear-session" onclick={onclick_generate_link}>{"Link"}</button>
@@ -362,6 +368,14 @@ impl Component for BayesComponent {
                 }
                 ctx.link().send_message(Msg::ClearUrl);
             }
+            Msg::DeleteHypothesis(hyp_idx) => {
+                self.data.hypotheses.remove(hyp_idx);
+                self.data.prior_odds.remove(hyp_idx);
+                self.data.posterior_odds.remove(hyp_idx);
+                for ev_idx in 0..self.data.evidence.len() {
+                    self.data.likelihoods[ev_idx].remove(hyp_idx);
+                }
+            }
             Msg::Prior(idx, val, hyp) => {
                 self.data.hypotheses[idx] = hyp[idx].to_string();
                 self.data.prior_odds[idx] = val[idx];
@@ -375,6 +389,11 @@ impl Component for BayesComponent {
                 self.data
                     .likelihoods
                     .push(vec![0.5; self.data.hypotheses.len()]);
+                ctx.link().send_message(Msg::ClearUrl);
+            }
+            Msg::DeleteEvidence(ev_idx) => {
+                self.data.evidence.remove(ev_idx);
+                self.data.likelihoods.remove(ev_idx);
                 ctx.link().send_message(Msg::ClearUrl);
             }
             Msg::Evidence(ev_idx, hyp_idx, new_odds) => {
