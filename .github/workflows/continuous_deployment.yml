@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - run: trunk build --release --public-url /${{ github.event.repository.name }}/
+      - run: trunk build --release --public-url bayescalc.io
 
       - uses: peaceiris/actions-gh-pages@v3.9.3
         if: github.ref == 'refs/heads/main'

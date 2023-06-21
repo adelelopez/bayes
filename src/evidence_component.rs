@@ -1,5 +1,6 @@
 // evidence_component.rs
 use crate::chance_component::percentize;
+use crate::label_component::LabelCallback;
 use crate::LabelComponent;
 use crate::NumComponent;
 use web_sys::HtmlInputElement;
@@ -14,6 +15,8 @@ pub struct EvidenceProps {
     pub onchange: Callback<EvidenceCallback>,
     pub prior_odds: Vec<f64>,
     pub likelihoods: Vec<f64>,
+    #[prop_or(false)]
+    pub last: bool,
 }
 
 pub struct EvidenceComponent {
@@ -25,13 +28,14 @@ pub struct EvidenceComponent {
 pub enum Msg {
     EditLabel(AttrValue),
     Likelihood(usize, f64),
-
+    Delete,
     DoNothing,
 }
 
 pub enum EvidenceCallback {
     OddsUpdate(usize, f64),
     LabelEdit(String),
+    Delete,
 }
 
 pub fn normalize(odds: Vec<f64>) -> Vec<f64> {
@@ -62,9 +66,12 @@ impl Component for EvidenceComponent {
     }
 
     fn view(&self, ctx: &yew::Context<Self>) -> Html {
-        let onchange_label = ctx
-            .link()
-            .callback(move |label: String| Msg::EditLabel(AttrValue::from(label)));
+        let onchange_label =
+            ctx.link()
+                .callback(move |label_change: LabelCallback| match label_change {
+                    LabelCallback::Delete => Msg::Delete,
+                    LabelCallback::LabelEdit(label) => Msg::EditLabel(AttrValue::from(label)),
+                });
 
         let onchange_odds = move |hyp_idx: usize| {
             ctx.link()
@@ -152,6 +159,7 @@ impl Component for EvidenceComponent {
                     class={AttrValue::from("evidence")}
                 placeholder={AttrValue::from(self.evidence.clone())}
                 onchange={&onchange_label}
+                deleteable={ctx.props().last}
                 />
             //    <div class="log-odds">
             //    {for display_log_odds}
@@ -213,6 +221,10 @@ impl Component for EvidenceComponent {
                 ctx.props()
                     .onchange
                     .emit(EvidenceCallback::OddsUpdate(hyp_idx, new_odds));
+                true
+            }
+            Msg::Delete => {
+                ctx.props().onchange.emit(EvidenceCallback::Delete);
                 true
             }
 

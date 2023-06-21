@@ -1,4 +1,5 @@
 // chance_component.rs
+use crate::label_component::LabelCallback;
 use crate::LabelComponent;
 use crate::NumComponent;
 use is_close::all_close;
@@ -15,6 +16,7 @@ pub enum Msg {
     Percentize,
     AddHypothesis,
     EditHypothesis(usize, String),
+    Delete(usize),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -26,7 +28,7 @@ pub enum Kind {
 
 #[derive(Properties, PartialEq)]
 pub struct ChanceProps {
-    pub onchange: Callback<(usize, Vec<f64>, Vec<AttrValue>)>,
+    pub onchange: Callback<ChanceCallback>,
     #[prop_or(None)]
     pub onadd_hypothesis: Option<Callback<bool>>,
     #[prop_or(None)]
@@ -34,6 +36,11 @@ pub struct ChanceProps {
     pub hypotheses: Vec<AttrValue>,
     #[prop_or(Kind::Prior)]
     pub kind: Kind,
+}
+
+pub enum ChanceCallback {
+    Delete(usize),
+    EditHypothesis(usize, Vec<f64>, Vec<AttrValue>),
 }
 
 pub struct ChanceComponent {
@@ -97,7 +104,10 @@ impl Component for ChanceComponent {
         let onchange_odds = |idx: usize| ctx.link().callback(move |odds: f64| Msg::Odds(idx, odds));
         let onchange_hypothesis = |idx: usize| {
             ctx.link()
-                .callback(move |label: String| Msg::EditHypothesis(idx, label))
+                .callback(move |label_change: LabelCallback| match label_change {
+                    LabelCallback::Delete => Msg::Delete(idx),
+                    LabelCallback::LabelEdit(label) => Msg::EditHypothesis(idx, label),
+                })
         };
 
         let onclick_percentize =
@@ -114,6 +124,7 @@ impl Component for ChanceComponent {
                 placeholder={AttrValue::from(hyp.1.clone())}
                 onchange={&onchange_hypothesis(hyp.0)}
                 display_only={ctx.props().kind != Kind::Prior}
+                deleteable={true}
                 />
             }
         });
@@ -213,7 +224,11 @@ impl Component for ChanceComponent {
                 self.odds[idx] = val;
                 self.force_odds[idx] = None;
 
-                onchange.emit((idx, self.odds.clone(), self.hypotheses.clone()));
+                onchange.emit(ChanceCallback::EditHypothesis(
+                    idx,
+                    self.odds.clone(),
+                    self.hypotheses.clone(),
+                ));
 
                 true
             }
@@ -221,7 +236,11 @@ impl Component for ChanceComponent {
                 self.odds = percentize(self.odds.clone());
                 self.force_odds = self.odds.clone().into_iter().map(Some).collect();
                 for idx in 0..self.odds.len() {
-                    onchange.emit((idx, self.odds.clone(), self.hypotheses.clone()));
+                    onchange.emit(ChanceCallback::EditHypothesis(
+                        idx,
+                        self.odds.clone(),
+                        self.hypotheses.clone(),
+                    ));
                 }
                 true
             }
@@ -233,7 +252,15 @@ impl Component for ChanceComponent {
             }
             Msg::EditHypothesis(idx, label) => {
                 self.hypotheses[idx] = AttrValue::from(label);
-                onchange.emit((idx, self.odds.clone(), self.hypotheses.clone()));
+                onchange.emit(ChanceCallback::EditHypothesis(
+                    idx,
+                    self.odds.clone(),
+                    self.hypotheses.clone(),
+                ));
+                true
+            }
+            Msg::Delete(idx) => {
+                onchange.emit(ChanceCallback::Delete(idx));
                 true
             }
         }
