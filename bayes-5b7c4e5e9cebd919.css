@@ -15,7 +15,7 @@
     --bayes-2-discard: #fae0a266;
     --bayes-3: #9f90c9;
     --bayes-3-discard: #9f90c966;
-    --bayes-4: #a2cca4;
+    --bayes-4: #7dc7a0;
     --bayes-4-discard: #a2cca466;
     --bayes-2-high-contrast: #eacd31;
     --label-background: rgb(255, 244, 231);
@@ -33,6 +33,7 @@ body {
     color: var(--text-color);
     text-decoration: solid;
     padding-bottom: 7px;
+    font-size: 1.8rem;
 }
 
 .container {
@@ -103,6 +104,7 @@ input[type=file] {
 
 .prior input.odds, .evidence input.label-input {
     width: 68%;
+    margin-bottom: 10px;
 }
 
 .evidence input.odds {
@@ -176,12 +178,12 @@ button.no_button {
 
 .menu {
     position: absolute;
+    background-color: var(--background-color);
     left: 20px;
     top: 20px;
     font-size: 2rem;
     text-align: center;
     width: 160px;
-    
 }
 
 .menu button {
@@ -193,6 +195,9 @@ button.no_button {
 
 .posterior .percent button {
     font-size: 1em;
+    padding: 0;
+    position: absolute;
+    right: 8px
 }
 
 .percent-symbol button {
@@ -229,21 +234,27 @@ label {
 }
 
 .label-button-edit, .label-button-x {
+    background: transparent;
     position: absolute;
-    right: 4px;
-    top: 4px;
-    transition: color 0.1s ease;
+    top: 0;
+    right: 0;
+    padding-right:8px;
+    padding-top: 8px;
+    /* transition: color 0.1s ease; */
     width: 30px;
+    /* color: var(--close-color); */
 }
 
 .label-button-edit:hover, .label-button-x:hover {
     cursor: pointer;
+    /* color: var(--text-color); */
+    /* opacity: 100%; */
 }
 
 .label-editable:hover {
     cursor: pointer;
     margin-left: 10%;
-    opacity: 50%;
+    /* opacity: 50%; */
     overflow-wrap: anywhere;
     padding-right: 20%;
 }
@@ -306,7 +317,7 @@ label {
 /* Odds */
 .odds {
     display: inline;
-    margin-left: 10px;
+    margin-left: 11px;
     margin-top: 5px;
     overflow-wrap: anywhere;
     width: 80%;
@@ -339,36 +350,45 @@ label {
     grid-column: span 1;
 }
 
-/* Add the remaining styles here... */
 /* Grid Columns */
 .c0 {
     background-color: var(--bayes-0);
     font-size: 1.75rem;
     grid-column: 1 / span 2;
+    position: relative;
+    margin-bottom: -1px;
 }
 
 .c1 {
     background-color: var(--bayes-1);
     font-size: 1.75rem;
     grid-column: 3 / span 2;
+    position: relative;
+    margin-bottom: -1px;
 }
 
 .c2 {
     background-color: var(--bayes-2);
     font-size: 1.75rem;
     grid-column: 5 / span 2;
+    position: relative;
+    margin-bottom: -1px;
 }
 
 .c3 {
     background-color: var(--bayes-3);
     font-size: 1.75rem;
     grid-column: 7 / span 2;
+    position: relative;
+    margin-bottom: -1px;
 }
 
 .c4 {
     background-color: var(--bayes-4);
     font-size: 1.75rem;
     grid-column: 9 / span 2;
+    position: relative;
+    margin-bottom: -1px;
 }
 
 .d0 .c0 {
@@ -587,6 +607,7 @@ label {
     transform: translateX(-50%);
     width: 0;
     height: 0;
+    z-index: 1;
 }
 
 .triangle-top::after {
@@ -665,17 +686,6 @@ label {
     cursor: pointer;
 }
 
-/* Label Button X */
-.label-button-x {
-    position: absolute;
-    right: 3px;
-    top: 3px;
-}
-
-.label-button-x:hover {
-    cursor: pointer;
-}
-
 /* Clear Session */
 .clear-session {
     width: 100%;
@@ -726,16 +736,6 @@ label {
     padding-right: 20%;
 }
 
-/* Label Button Edit Hover */
-.label-button-edit:hover {
-    cursor: pointer;
-}
-
-/* Label Button X Hover */
-.label-button-x:hover {
-    cursor: pointer;
-}
-
 /* Label Input */
 input.label-input {
     width: 68%;
@@ -760,13 +760,11 @@ input.label-input {
         display: flex;
         flex-direction: column-reverse;
     }
-    .main {
-        width: 400px;
-    }
     .prior, .posterior, .center, .evidence-item, .all-sliders {
         width: 100%;
     }
     .main {
+        /* width: 400px; */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -780,7 +778,7 @@ input.label-input {
     }
 
     .add-hypothesis {
-        display:none;
+        display: none;
     }
 
     .menu {
@@ -798,6 +796,9 @@ input.label-input {
         margin-left: auto;
         margin-right: auto;
     }
+    /* .menu a {
+        margin-bottom: 150px;
+    } */
     .modal {
         width: auto;
         display: none;
@@ -857,6 +858,12 @@ input.label-input {
 
     .after-bar, .center {
         width: 100% !important;
+    }
+}
+
+@media (max-width: 800px) {
+    .main {
+        width: 400px;
     }
 }
 
