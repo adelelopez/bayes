@@ -214,11 +214,11 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_22(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h48e8a905ac2fe2c8(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hddc333fc6f64958a(arg0, arg1);
 }
 
 function __wbg_adapter_25(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h6026c7f31e149200(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2699acfe88a3194e(arg0, arg1, addHeapObject(arg2));
 }
 
 function makeClosure(arg0, arg1, dtor, f) {
@@ -336,14 +336,14 @@ function __wbg_get_imports() {
         getInt32Memory0()[arg0 / 4 + 1] = len1;
         getInt32Memory0()[arg0 / 4 + 0] = ptr1;
     };
-    imports.wbg.__wbg_crush_e7ade6874be30b67 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbg_crush_d4749bd8d25ebd74 = function(arg0, arg1, arg2) {
         const ret = JSONCrush.crush(getStringFromWasm0(arg1, arg2));
         const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
         getInt32Memory0()[arg0 / 4 + 1] = len1;
         getInt32Memory0()[arg0 / 4 + 0] = ptr1;
     };
-    imports.wbg.__wbg_uncrush_246739b5d656cd75 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbg_uncrush_27dec1442700a393 = function(arg0, arg1, arg2) {
         const ret = JSONCrush.uncrush(getStringFromWasm0(arg1, arg2));
         const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
@@ -908,7 +908,7 @@ async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
     if (typeof input === 'undefined') {
-        input = new URL('bayes-calc-6f86411345e0006f_bg.wasm', import.meta.url);
+        input = new URL('bayes-calc-6b7652c783984f3f_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
