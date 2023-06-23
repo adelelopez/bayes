@@ -21,7 +21,7 @@ jobs:
 
       - name: Build with Trunk
         run: |
-          if [[ "${{ github.repository }}" == "username/username.github.io" ]]; then
+          if [[ "${{ github.repository }}" == "adelelopez/adelelopez.github.io" ]]; then
             BASE_URL="/"
           else
             BASE_URL="/${{ github.event.repository.name }}/"
