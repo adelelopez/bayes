@@ -4,6 +4,7 @@ use evidence_component::EvidenceComponent;
 use label_component::LabelComponent;
 use modal_component::ModalComponent;
 use num_component::NumComponent;
+// use slider_component::SliderComponent;
 use yew::prelude::*;
 
 mod bayes_component;
@@ -13,6 +14,7 @@ mod json_crush;
 mod label_component;
 mod modal_component;
 mod num_component;
+mod slider_component;
 mod storage;
 
 #[function_component(App)]
