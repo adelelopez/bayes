@@ -10,6 +10,7 @@ use crate::storage::parse_markdown;
 use crate::storage::BayesData;
 use gloo::utils::document;
 use js_sys::Array;
+use serde::{Deserialize, Serialize};
 use wasm_bindgen::closure::Closure;
 use wasm_bindgen::JsValue;
 use web_sys::FileReader;
@@ -53,6 +54,11 @@ pub fn recalculate_to(prior: Vec<f64>, likelihoods: Vec<Vec<f64>>, to: usize) ->
 fn save_data(data: &BayesData) {
     let serialized = serde_json::to_string(&data).unwrap();
     SessionStorage::set("bayes_component", serialized).unwrap();
+}
+
+fn save_prefs(prefs: &BayesPrefs) {
+    let serialized = serde_json::to_string(&prefs).unwrap();
+    SessionStorage::set("bayes_preferences", serialized).unwrap();
 }
 
 fn modify_class(elem: &HtmlElement, class_name: &str, add: bool) {
@@ -137,8 +143,13 @@ pub struct BayesComponent {
     pub data: BayesData,
     onload: Option<Closure<dyn FnMut(Event)>>,
     error_message: Option<String>,
-    is_modal_open: bool,
+    prefs: BayesPrefs,
     _hashchange_listener: Option<Closure<dyn FnMut(web_sys::Event)>>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BayesPrefs {
+    pub is_modal_open: bool,
 }
 
 impl Component for BayesComponent {
@@ -146,6 +157,11 @@ impl Component for BayesComponent {
     type Properties = BayesProps;
 
     fn create(ctx: &yew::Context<Self>) -> Self {
+        let window = web_sys::window().unwrap();
+        let document = window.document().unwrap();
+        let body = document.body().unwrap();
+        let width = body.client_width();
+
         let mut data = BayesData {
             hypotheses: vec!["Hypothesis A".to_string(), "Hypothesis B".to_string()],
             prior_odds: vec![1.0, 1.0],
@@ -154,9 +170,19 @@ impl Component for BayesComponent {
             likelihoods: vec![vec![0.5, 0.5]],
         };
 
+        let mut prefs = BayesPrefs {
+            is_modal_open: width > 1000,
+        };
+
         if let Ok(serialized) = SessionStorage::get::<String>("bayes_component") {
             if let Ok(loaded_data) = serde_json::from_str::<BayesData>(&serialized) {
                 data = loaded_data;
+            }
+        }
+
+        if let Ok(serialized) = SessionStorage::get::<String>("bayes_preferences") {
+            if let Ok(loaded_prefs) = serde_json::from_str::<BayesPrefs>(&serialized) {
+                prefs = loaded_prefs;
             }
         }
 
@@ -193,7 +219,7 @@ impl Component for BayesComponent {
             data,
             onload: None,
             error_message: None,
-            is_modal_open: true,
+            prefs,
             _hashchange_listener: Some(hashchange_listener),
         }
     }
@@ -289,9 +315,11 @@ impl Component for BayesComponent {
             });
 
         html! {
-            <div class="container" onmousemove={onmousemove}>
-                    <div class="menu">
+            <div class={format!("container len-{}", hypotheses.len())} onmousemove={onmousemove}>
+                <div class="menu">
+                    <div class="title">
                     <b><a href="">{"bayescalc.io"}</a></b>
+                    </div>
                     <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="clear-session" onclick={onclick_generate_link}>{"Link"}</button>
@@ -310,7 +338,7 @@ impl Component for BayesComponent {
                 </div>
 
                 <ModalComponent
-                is_open={self.is_modal_open}
+                is_open={self.prefs.is_modal_open}
                 on_close={toggle_modal}
                 />
 
@@ -443,7 +471,8 @@ impl Component for BayesComponent {
                 }
             },
             Msg::ToggleModal => {
-                self.is_modal_open = !self.is_modal_open;
+                self.prefs.is_modal_open = !self.prefs.is_modal_open;
+                save_prefs(&self.prefs)
             }
             Msg::GenerateLink => {
                 let encoded = encode_bayes_data(&self.data).unwrap();

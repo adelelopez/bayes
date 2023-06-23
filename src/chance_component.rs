@@ -3,6 +3,7 @@ use crate::label_component::LabelCallback;
 use crate::LabelComponent;
 use crate::NumComponent;
 use is_close::all_close;
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew::virtual_dom::AttrValue;
 
@@ -11,18 +12,23 @@ pub fn percentize(odds: Vec<f64>) -> Vec<f64> {
     odds.iter().map(|x| 100.0 * x / total).collect()
 }
 
+fn pair_sum(idx: usize, odds: &[f64]) -> f64 {
+    odds[idx] + odds[idx + 1]
+}
+
 pub enum Msg {
     Odds(usize, f64),
+    PriorSlide(usize, f64, f64),
     Percentize,
     AddHypothesis,
     EditHypothesis(usize, String),
     Delete(usize),
+    DoNothing,
 }
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Kind {
     Prior,
-    Evidence,
     Posterior,
 }
 
@@ -95,62 +101,93 @@ impl Component for ChanceComponent {
 
     fn view(&self, ctx: &yew::Context<Self>) -> Html {
         let percents = percentize(self.odds.clone());
+        let odds = self.odds.clone();
+
         let is_percent = if all_close!(self.odds.clone(), percentize(self.odds.clone())) {
             "no_button"
         } else {
             ""
         };
 
-        let onchange_odds = |idx: usize| ctx.link().callback(move |odds: f64| Msg::Odds(idx, odds));
-        let onchange_hypothesis = |idx: usize| {
-            ctx.link()
-                .callback(move |label_change: LabelCallback| match label_change {
-                    LabelCallback::Delete => Msg::Delete(idx),
-                    LabelCallback::LabelEdit(label) => Msg::EditHypothesis(idx, label),
-                })
-        };
-
-        let onclick_percentize =
-            |_: usize| ctx.link().callback(move |_e: MouseEvent| Msg::Percentize);
         let onclick_add_hypothesis = {
             ctx.link()
                 .callback(move |_e: MouseEvent| Msg::AddHypothesis)
         };
 
-        let display_hypotheses = ctx.props().hypotheses.iter().enumerate().map(move |hyp| {
+        let display_hypotheses = ctx.props().hypotheses.iter().enumerate().map(|(idx, hyp)| {
             html! {
                 <LabelComponent
-                class={AttrValue::from(format!("c{idx} hyp", idx=hyp.0))}
-                placeholder={AttrValue::from(hyp.1.clone())}
-                onchange={&onchange_hypothesis(hyp.0)}
+                class={AttrValue::from(format!("c{} hyp", idx))}
+                placeholder={AttrValue::from(hyp.clone())}
+                onchange={ctx.link().callback(move |label_change: LabelCallback| match label_change {
+                    LabelCallback::Delete => Msg::Delete(idx),
+                    LabelCallback::LabelEdit(label) => Msg::EditHypothesis(idx, label),
+                })}
                 display_only={ctx.props().kind != Kind::Prior}
                 deleteable={true}
                 />
             }
         });
 
-        let display_odds = ctx.props().hypotheses.iter().enumerate().map(move |odds| {
-            html! {<div class={format!("c{idx}", idx=odds.0)}>
-            <NumComponent min_value={0.0} max_value={None}
-            force_value={self.force_odds[odds.0]} class={AttrValue::from("odds")}
-            placeholder={AttrValue::from("1")} onchange={&onchange_odds(odds.0)}
-            display_only={ctx.props().kind == Kind::Posterior}/>
-            <div class="percent">
-            <button class={is_percent} onclick={onclick_percentize(odds.0)}>{"%"}</button>
-            </div>  </div>}
-        });
-
-        let display_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
-            html!{
-                <div class={format!("c{idx}", idx=odds.0)} style={format!("width:{}%", percents[odds.0])}>
+        let display_odds = ctx.props().hypotheses.iter().enumerate().map(|(idx, _)| {
+            html! {
+                <div class={format!("c{}", idx)}>
+                    <NumComponent min_value={0.0} max_value={None}
+                    force_value={self.force_odds[idx]} class={AttrValue::from("odds")}
+                    placeholder={AttrValue::from("1")} onchange={ctx.link().callback(move |odds: f64| Msg::Odds(idx, odds))}
+                    display_only={ctx.props().kind == Kind::Posterior}/>
+                    <div class="percent">
+                        <button class={is_percent} onclick={ctx.link().callback(move |_e: MouseEvent| Msg::Percentize)}>{"%"}</button>
+                    </div>
                 </div>
+            }
         });
 
-        let cols = if ctx.props().kind == Kind::Evidence {
-            2
-        } else {
-            2 * (ctx.props().hypotheses.len())
-        };
+        let display_bar = ctx.props().hypotheses.iter().enumerate().map(|(idx, _)| {
+            let onslide = {
+                let percents = percents.clone();
+                let odds = odds.clone();
+                move |hyp_idx: usize| {
+                    ctx.link().callback(move |e: InputEvent| {
+                        e.stop_propagation();
+                        let input_el: HtmlInputElement = e.target_unchecked_into();
+                        let val_str = input_el.value();
+                        let total_odds: f64 = odds.iter().sum();
+
+                        let subtotal = pair_sum(hyp_idx, &percents.clone());
+                        match val_str.parse::<f64>() {
+                            Ok(val) => Msg::PriorSlide(hyp_idx, total_odds*subtotal*val*0.0001,total_odds*subtotal*(100.0-val)*0.0001),
+                            Err(_) => Msg::DoNothing,
+                        }
+                    })
+                }
+            };
+
+            html!{
+                <>
+                if ctx.props().kind == Kind::Prior {
+                    <div class={format!("c{}", idx)} style={format!("width:{}%", percents[idx])}>
+                        if idx < ctx.props().hypotheses.len() - 1 {
+                            <input type="range" min=0.0
+                            max={100.0}
+                            step={0.1}
+                            value={AttrValue::from((percents[idx]/pair_sum(idx, &percents)*100.0).to_string())}
+                            class="prior-slider" oninput={onslide(idx)}
+                            style={format!("width: {}px", pair_sum(idx, &percents)*2.0 *(ctx.props().hypotheses.len() as f64))}
+                            />
+                        }
+                    </div>
+                    if idx < ctx.props().hypotheses.len() - 1 {
+                        <div class="triangle-bot"></div>
+                    }
+                } else {
+                    <div class={format!("c{}", idx)} style={format!("width:{}%", percents[idx])}></div>
+                }
+                </>
+            }
+        });
+
+        let cols = ctx.props().hypotheses.len();
         let col_str = format!("{}px", cols * 100);
 
         let style = format!("display: grid; width: {};", col_str);
@@ -163,7 +200,8 @@ impl Component for ChanceComponent {
             {for display_odds}
             </div>
 
-            <div  style={format!("display: flex; height: 20px; width:{}px",100*cols)}>
+            <div class="prior-bar" style={format!("width:{}px",200*cols)}>
+
             {for display_bar}
             </div>
             </div>
@@ -232,6 +270,30 @@ impl Component for ChanceComponent {
 
                 true
             }
+            Msg::PriorSlide(idx, val1, val2) => {
+                log::debug!("i {} {} {}", idx, val1, val2);
+                if val1 < 0.0 {
+                    return true;
+                }
+                self.odds[idx] = val1;
+                self.odds[idx + 1] = val2;
+                self.force_odds[idx] = None;
+                self.force_odds[idx + 1] = None;
+
+                onchange.emit(ChanceCallback::EditHypothesis(
+                    idx,
+                    self.odds.clone(),
+                    self.hypotheses.clone(),
+                ));
+
+                onchange.emit(ChanceCallback::EditHypothesis(
+                    idx + 1,
+                    self.odds.clone(),
+                    self.hypotheses.clone(),
+                ));
+
+                true
+            }
             Msg::Percentize => {
                 self.odds = percentize(self.odds.clone());
                 self.force_odds = self.odds.clone().into_iter().map(Some).collect();
@@ -263,6 +325,7 @@ impl Component for ChanceComponent {
                 onchange.emit(ChanceCallback::Delete(idx));
                 true
             }
+            Msg::DoNothing => false,
         }
     }
 }

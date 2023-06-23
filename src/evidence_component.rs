@@ -2,6 +2,7 @@
 use crate::chance_component::percentize;
 use crate::label_component::LabelCallback;
 use crate::LabelComponent;
+// use crate::SliderComponent;
 use crate::NumComponent;
 use web_sys::HtmlInputElement;
 
@@ -119,7 +120,6 @@ impl Component for EvidenceComponent {
 
         let display_hypothesis_evidence = ctx.props().hypotheses.iter().enumerate().map(move |hypotheses|
             html!{
-            <>
             <div class={format!("d{idx}", idx=hypotheses.0)}>
                 <NumComponent min_value={0.0} max_value={100.0}
                 force_value={Some(self.likelihoods[hypotheses.0]*100.0)} class={AttrValue::from("like")}
@@ -138,7 +138,6 @@ impl Component for EvidenceComponent {
                 <button class="no_button" >{"%"}</button>
                 </div>
             </div>
-            </>
          });
 
         // let display_log_odds = ctx.props().hypotheses.iter().enumerate().map(move |hypothesis|
@@ -169,6 +168,7 @@ impl Component for EvidenceComponent {
 
             <div class="all-sliders">
             <div style={format!(r#"display: grid; grid-template-columns: {}; align-items: center;"#, col_str)}>
+            // <SliderComponent likelihood={self.likelihoods[0]} />
 
             {for display_hypothesis_evidence}
             </div>

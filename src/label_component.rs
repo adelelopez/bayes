@@ -7,6 +7,7 @@ pub enum Msg {
     Blur,
     EditMode,
     Delete,
+    Focus,
 }
 
 #[derive(Properties, PartialEq)]
@@ -33,6 +34,7 @@ pub struct LabelComponent {
     value: AttrValue,
     edit_mode: bool,
     should_focus: bool,
+    start_value: AttrValue,
 }
 
 impl Component for LabelComponent {
@@ -45,6 +47,7 @@ impl Component for LabelComponent {
             value: ctx.props().placeholder.clone(),
             edit_mode: false,
             should_focus: ctx.props().focus_on_mount,
+            start_value: ctx.props().placeholder.clone(),
         }
     }
 
@@ -84,6 +87,14 @@ impl Component for LabelComponent {
             }
             Msg::Delete => {
                 ctx.props().onchange.emit(LabelCallback::Delete);
+                true
+            }
+            Msg::Focus => {
+                if let Some(input_el) = self.input_ref.cast::<HtmlInputElement>() {
+                    if input_el.value() == self.start_value.to_string() {
+                        input_el.select();
+                    }
+                }
                 true
             }
         }
@@ -134,6 +145,7 @@ impl Component for LabelComponent {
                                 value={value.clone()}
                                 oninput={oninput}
                                 onblur={onblur}
+                                onfocus={ctx.link().callback(|_: FocusEvent| Msg::Focus)}
                                 ref={input_ref}
                             />
                         </>
