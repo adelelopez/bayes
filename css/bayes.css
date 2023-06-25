@@ -1,20 +1,21 @@
 :root {
     --background-color: #fff;
     --text-color: #111;
+    --text-color-faded: #1116;
     --input-border-color: #ddd; 
     --close-color: #aaa;
     --button-background: aliceblue;
-    --button-faded-background: #f0fbff55;
+    --button-faded-background: #f0fbff33;
     --invalid-color: #f9868a;
     --link-color: #788fd5;
     --bayes-0: #f9868a;
     --bayes-0-discard: #f9868a66;
-    --bayes-1: #788fd5;
-    --bayes-1-discard:  #788fd566;
+    --bayes-1: #7d95dd;
+    --bayes-1-discard:  #7d95dd66;
     --bayes-2: #fae0a2;
     --bayes-2-discard: #fae0a266;
-    --bayes-3: #9f90c9;
-    --bayes-3-discard: #9f90c966;
+    --bayes-3: #a494d0;
+    --bayes-3-discard: #a494d066;
     --bayes-4: #a4d2b9;
     --bayes-4-discard: #a4d2b966;
     --bayes-2-high-contrast: #eacd31;
@@ -130,7 +131,6 @@ button {
     cursor: pointer;
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 1.2rem;
-    /* border-radius: 15px; */
 }
 
 button:hover {
@@ -151,7 +151,7 @@ button.add-evidence {
     font-family: 'Atkinson Hyperlegible', sans-serif;
     font-size: 1.7rem;
     grid-column: 1/3;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
     margin-top: 5px;
     width: 100%;
     height: 60px;
@@ -159,11 +159,9 @@ button.add-evidence {
 }
 
 .prior .percent button, .evidence .percent button {
-    opacity: 50%;
-    color: var(--text-color);
+    color: var(--text-color-faded);
     background: var(--button-faded-background);
     cursor: pointer;
-    /* border: 1px; */
     padding-left: 1px;
     padding-right: 1px;
     width: 32px;
@@ -188,6 +186,12 @@ button.no_button {
     cursor: default !important;
 }
 
+.evidence-item button.no_button {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
 .menu {
     position: absolute;
     background-color: var(--background-color);
@@ -209,7 +213,7 @@ button.no_button {
     font-size: 1em;
     padding: 0;
     position: absolute;
-    right: 8px
+    right: 6px
 }
 
 .percent-symbol button {
@@ -235,7 +239,6 @@ label {
     display: none;
     font-size: 0.5em;
     margin: auto;
-    /* padding-left: 10%; */
 }
 
 .label {
@@ -247,11 +250,11 @@ label {
     margin-left: 33px;
     line-height: 1.2em;
     margin-right: 30px;
+    margin-bottom: 2px;
 }
 
 .ev .label {
     margin-left: 35px;
-    /* margin-top: 1px; */
     padding-right: 30px;
 }
 
@@ -262,21 +265,19 @@ label {
     right: 0;
     padding-right:8px;
     padding-top: 8px;
-    /* transition: color 0.1s ease; */
     width: 30px;
-    /* opacity: 30%; */
-    /* color: var(--close-color); */
+    color: var(--text-color-faded);
 }
 
 .label-button-edit:hover, .label-button-x:hover {
     cursor: pointer;
-    /* opacity: 90%; */
-    /* color: var(--text-color); */
+    opacity: 100%;
+    color: var(--text-color);
 }
 
 .label-editable::before {
     content: "✎";
-    opacity: 30%;
+    color: var(--text-color-faded);
     position: absolute;
     left: 9px;
     top: 8px;
@@ -285,22 +286,16 @@ label {
     line-height: 1em;
 }
 
-/* .label-editable:hover:before {
+.label-editable:hover:before {
     color: var(--text-color);
-    opacity: 100% !important;
-} */
-
-.label-editable {
-    transition: opacity 0.1s ease-in-out;
+    opacity: 80%;
 }
 
 /* Label Editable Hover */
 .label-editable:hover {
     cursor: pointer;
-    /* margin-left: 10%; */
-    opacity: 50%;
+    color: var(--text-color-faded);
     overflow-wrap: anywhere;
-    /* padding-right: 20%; */
 }
 
 /* Label Input */
@@ -541,7 +536,10 @@ input.label-input {
 .main, .prior, .evidence-item, .all-sliders, .posterior {
     display: grid;
     grid-template-columns: 370px 400px 200px;
-    width: 120%;
+}
+
+.len-5 .main{
+    width: 107%;
 }
 
 .prior {
@@ -858,8 +856,13 @@ input.label-input {
         width: 100%;
     }
 
+    .len-0 .main, .len-0 .menu {
+        width: 400px
+    }
+
+
     .len-1 .main, .len-1 .menu {
-        width: 200px
+        width: 400px
     }
 
 
@@ -897,7 +900,16 @@ input.label-input {
         /* font-size: 2rem; */
     }
 
-    .add-hypothesis {
+    .len-0 .add-hypothesis {
+        width: 400px;
+        margin-left: 0;
+    }
+
+    .len-1 .add-hypothesis {
+        width: 200px;
+    }
+
+    .len-2 .add-hypothesis, .len-3 .add-hypothesis, .len-4 .add-hypothesis, .len-5 .add-hypothesis {
         display: none;
     }
 
@@ -994,6 +1006,7 @@ input.label-input {
     :root {
         --background-color: #192744;
         --text-color: #e2e9ee;
+        --text-color-faded: #e2e9ee66;
         --input-border-color: #2e3548;
         --close-color: #90adc2;
         --button-background: #253865;
