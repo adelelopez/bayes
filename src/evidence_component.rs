@@ -18,6 +18,7 @@ pub struct EvidenceProps {
     pub likelihoods: Vec<f64>,
     #[prop_or(false)]
     pub last: bool,
+    pub color: Vec<usize>,
 }
 
 pub struct EvidenceComponent {
@@ -109,10 +110,10 @@ impl Component for EvidenceComponent {
         let display_after_bar = ctx.props().hypotheses.iter().enumerate().map(move |odds|
             html!{
                 <>
-                    <div class={format!("d{idx} c0", idx=odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0]*self.likelihoods[odds.0])}>
+                    <div class={format!("b{} d{} c0", ctx.props().color[odds.0], odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0]*self.likelihoods[odds.0])}>
 
                     </div>
-                    <div class={format!("d{idx} c1", idx=odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0]*(1.0-self.likelihoods[odds.0]))}>
+                    <div class={format!("a{} d{} c1", ctx.props().color[odds.0], odds.0)} style={format!("width:{}%", prior_odds_percent[odds.0]*(1.0-self.likelihoods[odds.0]))}>
 
                     </div>
                 </>
@@ -120,18 +121,18 @@ impl Component for EvidenceComponent {
 
         let display_hypothesis_evidence = ctx.props().hypotheses.iter().enumerate().map(move |hypotheses|
             html!{
-            <div class={format!("d{idx}", idx=hypotheses.0)}>
+            <div class={format!("d{}", hypotheses.0)}>
                 <NumComponent min_value={0.0} max_value={100.0}
                 force_value={Some(self.likelihoods[hypotheses.0]*100.0)} class={AttrValue::from("like")}
                 placeholder={AttrValue::from("50")} onchange={&onchange_odds(hypotheses.0)}
                 />
                 <input type="range" min=0.0 max=1.0 step={0.001} value={AttrValue::from((self.likelihoods[hypotheses.0]).to_string())} class="slider" ontouchmove={ontouchmove(hypotheses.0)} oninput={onslide(hypotheses.0)} />
                 <div class="before-bar">
-                    <div class={"c0"} style={format!("width:{}%", 100.0*self.likelihoods[hypotheses.0])}>
+                    <div class={format!("b{} c0",ctx.props().color[hypotheses.0])} style={format!("width:{}%", 100.0*self.likelihoods[hypotheses.0])}>
                     </div>
                     <div class="triangle-top"></div>
                     <div class="triangle-bot"></div>
-                    <div class={"c1"} style={format!("width:{}%", 100.0*(1.0-self.likelihoods[hypotheses.0]))}>
+                    <div class={format!("a{} c1",ctx.props().color[hypotheses.0])} style={format!("width:{}%", 100.0*(1.0-self.likelihoods[hypotheses.0]))}>
                     </div>
                 </div>
                 <div class="percent-symbol">
