@@ -42,6 +42,7 @@ pub struct ChanceProps {
     pub hypotheses: Vec<AttrValue>,
     #[prop_or(Kind::Prior)]
     pub kind: Kind,
+    pub color: Vec<usize>,
 }
 
 pub enum ChanceCallback {
@@ -117,7 +118,7 @@ impl Component for ChanceComponent {
         let display_hypotheses = ctx.props().hypotheses.iter().enumerate().map(|(idx, hyp)| {
             html! {
                 <LabelComponent
-                class={AttrValue::from(format!("c{} hyp", idx))}
+                class={AttrValue::from(format!("b{} c{} hyp", ctx.props().color[idx],idx))}
                 placeholder={AttrValue::from(hyp.clone())}
                 onchange={ctx.link().callback(move |label_change: LabelCallback| match label_change {
                     LabelCallback::Delete => Msg::Delete(idx),
@@ -131,7 +132,7 @@ impl Component for ChanceComponent {
 
         let display_odds = ctx.props().hypotheses.iter().enumerate().map(|(idx, _)| {
             html! {
-                <div class={format!("c{}", idx)}>
+                <div class={format!("b{} c{}", ctx.props().color[idx], idx)}>
                     <NumComponent min_value={0.0} max_value={None}
                     force_value={self.force_odds[idx]} class={AttrValue::from("odds")}
                     placeholder={AttrValue::from("1")} onchange={ctx.link().callback(move |odds: f64| Msg::Odds(idx, odds))}
@@ -166,7 +167,7 @@ impl Component for ChanceComponent {
             html!{
                 <>
                 if ctx.props().kind == Kind::Prior {
-                    <div class={format!("c{}", idx)} style={format!("width:{}%", percents[idx])}>
+                    <div class={format!("b{} c{}", ctx.props().color[idx], idx)} style={format!("width:{}%", percents[idx])}>
                         if idx < ctx.props().hypotheses.len() - 1 {
                             <input type="range" min=0.0
                             max={100.0}
@@ -181,7 +182,7 @@ impl Component for ChanceComponent {
                         <div class="triangle-bot"></div>
                     }
                 } else {
-                    <div class={format!("c{}", idx)} style={format!("width:{}%", percents[idx])}></div>
+                    <div class={format!("b{} c{}", ctx.props().color[idx], idx)} style={format!("width:{}%", percents[idx])}></div>
                 }
                 </>
             }

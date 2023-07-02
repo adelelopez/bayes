@@ -15,7 +15,9 @@ use wasm_bindgen::closure::Closure;
 use wasm_bindgen::JsValue;
 use web_sys::FileReader;
 use web_sys::HtmlElement;
+use web_sys::Url;
 
+use crate::share_component::ShareComponent;
 use crate::ChanceComponent;
 use crate::EvidenceComponent;
 use crate::ModalComponent;
@@ -129,6 +131,7 @@ pub enum Msg {
     FileSelected(Option<web_sys::File>),
     FileContent(String),
     ToggleModal,
+    HideShare,
     GenerateLink,
     UpdateData(BayesData),
     ClearUrl,
@@ -144,12 +147,15 @@ pub struct BayesComponent {
     onload: Option<Closure<dyn FnMut(Event)>>,
     error_message: Option<String>,
     prefs: BayesPrefs,
+    show_link: bool,
+    link: Option<String>,
     _hashchange_listener: Option<Closure<dyn FnMut(web_sys::Event)>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct BayesPrefs {
     pub is_modal_open: bool,
+    pub color: Vec<usize>,
 }
 
 impl Component for BayesComponent {
@@ -172,6 +178,7 @@ impl Component for BayesComponent {
 
         let mut prefs = BayesPrefs {
             is_modal_open: width > 1000,
+            color: vec![0, 1, 2, 3, 4],
         };
 
         if let Ok(serialized) = SessionStorage::get::<String>("bayes_component") {
@@ -220,6 +227,8 @@ impl Component for BayesComponent {
             onload: None,
             error_message: None,
             prefs,
+            show_link: false,
+            link: None,
             _hashchange_listener: Some(hashchange_listener),
         }
     }
@@ -242,6 +251,7 @@ impl Component for BayesComponent {
         let onclick_generate_link = ctx.link().callback(|_e: MouseEvent| Msg::GenerateLink);
 
         let toggle_modal = ctx.link().callback(|_| Msg::ToggleModal);
+        let hide_share = ctx.link().callback(|_| Msg::HideShare);
 
         let on_file_input_change = ctx.link().callback(|e: Event| {
             Msg::FileSelected(
@@ -311,6 +321,7 @@ impl Component for BayesComponent {
                 onchange={&onchange_evidence(ev.0)}
                 likelihoods = {self.data.likelihoods[ev.0].clone()}
                 last = {ev.0 == self.data.evidence.len() -1 }
+                color = {self.prefs.color.clone()}
                 />
             });
 
@@ -323,6 +334,9 @@ impl Component for BayesComponent {
                     <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
                     <button class="clear-session" onclick={onclick_generate_link}>{"Link"}</button>
+                    if self.link.is_some() {
+                      <ShareComponent link={AttrValue::from(self.link.clone().unwrap())} show={self.show_link} on_close={hide_share}/>
+                    }
                     <button class="export-markdown" onclick={onclick_export}>{"Export"}</button>
 
                     <label class="dropzone" for="fileInput">
@@ -349,18 +363,19 @@ impl Component for BayesComponent {
                         </div>
                         <div class="center">
                             <ChanceComponent onchange={onchange_prior} force_chance={Some(self.data.prior_odds.clone())}
-                                hypotheses={hypotheses.clone()} onadd_hypothesis={onchange_add_hypothesis} kind={Kind::Prior}/>
+                                hypotheses={hypotheses.clone()} onadd_hypothesis={onchange_add_hypothesis} kind={Kind::Prior}
+                                color = {self.prefs.color.clone()}/>
                         </div>
                     </div>
 
                     {for display_evidence}
                     {if hypotheses.is_empty() {
-                        html!(  <div style={format!("width:{}px",400)}>
+                        html!(  <div>
                         <button class="add-evidence" onclick={onclick_add_evidence}>{"Add Evidence"}</button>
                         </div>)
                     } else {
                         html!(
-                    <div class ="center" style={format!("width:{}px",200*hypotheses.len())}>
+                    <div class ="center">
                     <button class="add-evidence" onclick={onclick_add_evidence}>{"Add Evidence"}</button>
                     </div>)
                     }}
@@ -371,7 +386,7 @@ impl Component for BayesComponent {
                         </div>
                         <div class="center">
                             <ChanceComponent onchange={onchange_posterior} force_chance={Some(self.data.posterior_odds.clone())}
-                                hypotheses={hypotheses.clone()} kind={Kind::Posterior}/>
+                                hypotheses={hypotheses.clone()} kind={Kind::Posterior} color = {self.prefs.color.clone()}/>
                         </div>
                     </div>
                 </div>
@@ -403,6 +418,8 @@ impl Component for BayesComponent {
                 for ev_idx in 0..self.data.evidence.len() {
                     self.data.likelihoods[ev_idx].remove(hyp_idx);
                 }
+                let removed_color = self.prefs.color.remove(hyp_idx);
+                self.prefs.color.push(removed_color);
             }
             Msg::Prior(idx, val, hyp) => {
                 self.data.hypotheses[idx] = hyp[idx].to_string();
@@ -474,19 +491,29 @@ impl Component for BayesComponent {
                 self.prefs.is_modal_open = !self.prefs.is_modal_open;
                 save_prefs(&self.prefs)
             }
+            Msg::HideShare => {
+                self.show_link = false;
+            }
             Msg::GenerateLink => {
                 let encoded = encode_bayes_data(&self.data).unwrap();
-                let url = format!(
-                    "{}#{}",
-                    document().location().unwrap().href().unwrap(),
-                    encoded
-                );
 
                 let window = web_sys::window().unwrap();
+                let location = window.location();
+                let current_url = location.href().unwrap();
+
+                let url = Url::new(&current_url).unwrap();
+                url.set_hash("");
+                let clean_url = url.href();
+
+                let new_url = format!("{}#{}", clean_url, encoded);
+
                 let history = window.history().unwrap();
                 history
-                    .push_state_with_url(&JsValue::NULL, "", Some(&url))
+                    .push_state_with_url(&JsValue::NULL, "", Some(&new_url))
                     .unwrap();
+                self.show_link = !self.show_link;
+
+                self.link = Some(new_url);
             }
             Msg::UpdateData(new_data) => {
                 self.data = new_data;
@@ -502,6 +529,8 @@ impl Component for BayesComponent {
                             log::error!("Failed to clear URL: {:?}", err);
                         });
                 }
+                self.show_link = false;
+                self.link = None;
             }
         }
         self.data.posterior_odds =

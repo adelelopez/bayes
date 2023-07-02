@@ -14,6 +14,7 @@ mod json_crush;
 mod label_component;
 mod modal_component;
 mod num_component;
+mod share_component;
 mod slider_component;
 mod storage;
 
