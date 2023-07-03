@@ -795,37 +795,38 @@ button.copy-button {
     height: 100% !important;
     position: absolute;
     width: 100%;
-    z-index: 2;
+    z-index: 20;
     -webkit-appearance: none !important;
 }
 
 .slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
-    appearance: none;
-    display: none;
+    /* appearance: none; */
+    /* display: none; */
     background: transparent;
     border: none;
     cursor: pointer;
     height: 100%;
-    width: 4%;
+    width: 5%;
     -webkit-appearance: none;
+    z-index: 20;
 }
 
 .prior-slider {
-        appearance: none;
+        /* appearance: none; */
         /* display: none; */
         background: transparent;
         height: 20px;
         position: absolute;
         /* width: 400px; */
         /* width: 100%; */
-        z-index: 2;
+        z-index: 20;
         -webkit-appearance: none !important;
         pointer-events: none;
 }
 
 .prior-slider::-webkit-slider-thumb, .prior-slider::-moz-range-thumb {
-    appearance: none;
-    display: none;
+    /* appearance: none; */
+    /* display: none; */
     background: transparent;
     pointer-events: all;
     border: none;
@@ -833,6 +834,7 @@ button.copy-button {
     height: 100%;
     width: 10%;
     -webkit-appearance: none;
+    z-index: 20;
 }
 
 .like {
