@@ -272,7 +272,6 @@ impl Component for ChanceComponent {
                 true
             }
             Msg::PriorSlide(idx, val1, val2) => {
-                log::debug!("i {} {} {}", idx, val1, val2);
                 if val1 < 0.0 {
                     return true;
                 }
