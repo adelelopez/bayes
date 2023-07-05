@@ -32,7 +32,7 @@ body {
 
 .menu a {
     color: var(--text-color);
-    text-decoration: solid;
+    text-decoration: none;
     /* padding-bottom: 11px; */
     font-size: 1.9rem;
     letter-spacing: -0.8px;
@@ -1078,7 +1078,10 @@ input[type=range]::-webkit-slider-thumb {
     }
 
     .share-link {
+        /* width: 370px; */
+        margin: 0;
         width: 80%;
+        max-width: 400px;
     }
 
     input.link-text {
@@ -1086,6 +1089,7 @@ input[type=range]::-webkit-slider-thumb {
     }
     button.copy-button {
         width: 30%;
+        padding: 1px;
     }
 
     .d0, .d1, .d2, .d3, .d4 {
