@@ -156,6 +156,7 @@ button.add-evidence {
     width: 100%;
     height: 60px;
     letter-spacing: -0.3px;
+    transition: opacity 0.1s ease-in-out;;
 }
 
 .len-0 button.add-evidence {
@@ -171,7 +172,7 @@ button.add-evidence {
 }
 
 .len-3 button.add-evidence {
-    width: 600px;
+   width: 600px;
 }
 
 .len-4 button.add-evidence {
@@ -213,9 +214,13 @@ button.no_button {
 
 .evidence-item button.no_button {
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 6px;
+    right: 7px;
+    margin:0;
+    padding: 0;
 }
+
+
 
 .menu {
     position: absolute;
@@ -238,7 +243,7 @@ button.no_button {
     font-size: 1em;
     padding: 0;
     position: absolute;
-    right: 6px
+    right: 7px
 }
 
 .percent-symbol button {
@@ -272,15 +277,20 @@ label {
 }
 
 .hyp .label {
-    margin-left: 33px;
+    letter-spacing: -0.01em;
+    margin-left: auto;
     line-height: 1.2em;
-    margin-right: 30px;
+    margin-right: auto;
     margin-bottom: 2px;
+    padding-left: 27px;
+    padding-right: 27px;
 }
 
 .ev .label {
+    letter-spacing: -0.01em;
     margin-left: 35px;
     padding-right: 30px;
+    padding-bottom: 4px;
 }
 
 .label-button-edit, .label-button-x {
@@ -289,7 +299,7 @@ label {
     top: 0;
     right: 0;
     padding-right:8px;
-    padding-top: 8px;
+    padding-top: 7px;
     width: 30px;
     color: var(--text-color-faded);
 }
@@ -304,7 +314,7 @@ label {
     content: "✎";
     color: var(--text-color-faded);
     position: absolute;
-    left: 9px;
+    left: 8px;
     top: 8px;
     font-size: 22px;
     padding-right:15px;
@@ -372,6 +382,10 @@ input.label-input {
     font-size: 2.5em;
     padding: 10px;
     width: 100%;
+}
+
+.chance-label {
+    padding-bottom: 3px;
 }
 
 /* Posterior */
@@ -586,11 +600,12 @@ input.label-input {
 
 .prior {
     grid-column: 1/4;
-    padding-bottom: 5px;
+    padding-bottom: 3px;
 }
 
 .evidence-item {
     grid-column: 1/5;
+    margin-top: 1.5px;
     padding-bottom: 5px;
 }
 
@@ -653,9 +668,8 @@ input.label-input {
     height: 100%;
     overflow: auto;
     position: fixed;
-    right: 0;
+    left: 984px;
     top: 0;
-    width: 35%;
     z-index: 10;
 }
 
@@ -737,9 +751,10 @@ button.copy-button {
 
 .bart {
     display: flex;
-    margin-top: 3px;
+    margin-top: 4px;
     position: relative;
     width: 100%;
+    height: 10px;
 }
 
 .after-bar .collapsed {
@@ -795,7 +810,7 @@ button.copy-button {
     height: 100% !important;
     position: absolute;
     width: 100%;
-    z-index: 20;
+    z-index: 4;
     -webkit-appearance: none !important;
 }
 
@@ -812,7 +827,7 @@ button.copy-button {
 }
 
 .prior-slider {
-        /* appearance: none; */
+        appearance: none;
         /* display: none; */
         background: transparent;
         height: 20px;
@@ -824,35 +839,55 @@ button.copy-button {
         pointer-events: none;
 }
 
-.prior-slider::-webkit-slider-thumb, .prior-slider::-moz-range-thumb {
-    /* appearance: none; */
-    /* display: none; */
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 100%;
+    min-height: 80px;
     background: transparent;
     pointer-events: all;
-    border: none;
+    cursor: pointer;
+}
+
+.prior-slider::-webkit-slider-thumb, .prior-slider::-moz-range-thumb {
+    /* appearance: none; */
+    display: none;
+    background: transparent;
+    color: transparent;
+    pointer-events: all;
+    border: 0;
+    opacity: 0;
     cursor: pointer;
     height: 100%;
     width: 10%;
     -webkit-appearance: none;
+    
     z-index: 20;
 }
 
 .like {
     font-size: 1.5em !important;
-    left: 38.5%;
-    position: absolute;
-    top: calc(40% - 13px);
-    transform: translateX(-50%);
+    pointer-events: fill;
     width: 68% !important;
     z-index: 3;
+}
+
+.evidence-center {
+    position: absolute;
+    pointer-events: none;
+    top: calc(50% - 22px);
+    /* transform: translateX(-50%); */
+    width: 100%;
+    z-index: 5;
+    /* left: 66.6px; */
 }
 
 /* Percent Symbol */
 .percent-symbol {
     display: flex;
-    position: absolute;
+    /* position: absolute;
     right: 3px;
-    top: 25px;
+    top: 25px; */
     z-index: 5;
 }
 
@@ -919,7 +954,7 @@ button.copy-button {
     top: 2px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
     .container {
         margin:0;
         display: flex;
@@ -961,10 +996,6 @@ button.copy-button {
         width: 400px;
     }
 
-   
-    
-    
-
 
     .main {
         display: flex;
@@ -975,7 +1006,7 @@ button.copy-button {
     }
 
     button.add-evidence {
-        margin-top: 11px;
+        margin-top: 9px;
         transition: opacity 0.1s ease-in-out;;
 
         /* font-size: 2rem; */
@@ -1014,6 +1045,7 @@ button.copy-button {
     } */
     .modal {
         width: auto;
+        left: 0;
         /* display: none; */
     }
     .prior, .posterior {
@@ -1021,6 +1053,7 @@ button.copy-button {
         flex-direction: column;
         align-items: center;
         width: 100%;
+        padding-bottom: 1px;
     }
 
     .evidence {
@@ -1082,14 +1115,6 @@ button.copy-button {
 
     .after-bar, .center {
         width: 100% !important;
-    }
-}
-
-
-@media (max-width: 400px) {
-    body {
-        transform: scale(0.9);
-        transform-origin: center;
     }
 }
 

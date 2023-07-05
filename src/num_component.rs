@@ -7,6 +7,7 @@ pub enum Msg {
     SoftInput(f64),
     Blank,
     Blur,
+    DoNothing,
 }
 
 #[derive(Properties, PartialEq, Debug)]
@@ -86,6 +87,15 @@ impl Component for NumComponent {
             msg
         });
 
+        let onkeydown = ctx.link().callback(|e: KeyboardEvent| {
+            if e.key() == "Enter" {
+                e.prevent_default();
+                Msg::Blur
+            } else {
+                Msg::DoNothing
+            }
+        });
+
         let input_ref = self.input_ref.clone();
         let placeholder = ctx.props().placeholder.clone();
 
@@ -117,7 +127,7 @@ impl Component for NumComponent {
             };
             html! {
                 <input ref={input_ref} class={class_str}
-                      value={value} onblur={onblur}
+                      value={value} onblur={onblur} onkeydown={onkeydown}
                     type="text" {oninput} placeholder={placeholder} />
             }
         }
@@ -155,6 +165,9 @@ impl Component for NumComponent {
             }
             Msg::Blur => {
                 self.editing = false;
+                if let Some(input_el) = self.input_ref.cast::<HtmlInputElement>() {
+                    let _ = input_el.blur();
+                }
                 true
             }
             Msg::Blank => {
@@ -164,6 +177,7 @@ impl Component for NumComponent {
                 ctx.props().onchange.emit(1.0);
                 true
             }
+            Msg::DoNothing => false,
         }
     }
 }
