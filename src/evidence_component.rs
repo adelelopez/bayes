@@ -82,7 +82,6 @@ impl Component for EvidenceComponent {
 
         let ontouchmove = move |hyp_idx: usize| {
             ctx.link().callback(move |e: TouchEvent| {
-                e.prevent_default();
                 let input_el: HtmlInputElement = e.target_unchecked_into();
                 let val_str = input_el.value();
 
