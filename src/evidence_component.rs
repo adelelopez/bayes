@@ -122,10 +122,15 @@ impl Component for EvidenceComponent {
         let display_hypothesis_evidence = ctx.props().hypotheses.iter().enumerate().map(move |hypotheses|
             html!{
             <div class={format!("d{}", hypotheses.0)}>
-                <NumComponent min_value={0.0} max_value={100.0}
-                force_value={Some(self.likelihoods[hypotheses.0]*100.0)} class={AttrValue::from("like")}
-                placeholder={AttrValue::from("50")} onchange={&onchange_odds(hypotheses.0)}
-                />
+                <div class="evidence-center">
+                    <NumComponent min_value={0.0} max_value={100.0}
+                    force_value={Some(self.likelihoods[hypotheses.0]*100.0)} class={AttrValue::from("like")}
+                    placeholder={AttrValue::from("50")} onchange={&onchange_odds(hypotheses.0)}
+                    />
+                    <div class="percent-symbol">
+                       <button class="no_button" >{"%"}</button>
+                    </div>
+                </div>
                 <input type="range" min=0.0 max=1.0 step={0.001} value={AttrValue::from((self.likelihoods[hypotheses.0]).to_string())} class="slider" ontouchmove={ontouchmove(hypotheses.0)} oninput={onslide(hypotheses.0)} />
                 <div class="before-bar">
                     <div class={format!("b{} c0",ctx.props().color[hypotheses.0])} style={format!("width:{}%", 100.0*self.likelihoods[hypotheses.0])}>
@@ -134,9 +139,6 @@ impl Component for EvidenceComponent {
                     <div class="triangle-bot"></div>
                     <div class={format!("a{} c1",ctx.props().color[hypotheses.0])} style={format!("width:{}%", 100.0*(1.0-self.likelihoods[hypotheses.0]))}>
                     </div>
-                </div>
-                <div class="percent-symbol">
-                <button class="no_button" >{"%"}</button>
                 </div>
             </div>
          });

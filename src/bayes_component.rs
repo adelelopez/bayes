@@ -170,7 +170,7 @@ impl Component for BayesComponent {
 
         let mut data = BayesData {
             hypotheses: vec!["Hypothesis A".to_string(), "Hypothesis B".to_string()],
-            prior_odds: vec![1.0, 1.0],
+            prior_odds: vec![50.0, 50.0],
             posterior_odds: vec![50.0, 50.0],
             evidence: vec!["Evidence 1".to_string()],
             likelihoods: vec![vec![0.5, 0.5]],
@@ -455,7 +455,7 @@ impl Component for BayesComponent {
 
                 self.data = BayesData {
                     hypotheses: vec!["Hypothesis A".to_string(), "Hypothesis B".to_string()],
-                    prior_odds: vec![1.0, 1.0],
+                    prior_odds: vec![50.0, 50.0],
                     posterior_odds: vec![50.0, 50.0],
                     evidence: vec!["Evidence 1".to_string()],
                     likelihoods: vec![vec![0.5, 0.5]],

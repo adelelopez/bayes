@@ -132,7 +132,7 @@ impl Component for ChanceComponent {
 
         let display_odds = ctx.props().hypotheses.iter().enumerate().map(|(idx, _)| {
             html! {
-                <div class={format!("b{} c{}", ctx.props().color[idx], idx)}>
+                <div class={format!("chance-label b{} c{}", ctx.props().color[idx], idx)}>
                     <NumComponent min_value={0.0} max_value={None}
                     force_value={self.force_odds[idx]} class={AttrValue::from("odds")}
                     placeholder={AttrValue::from("1")} onchange={ctx.link().callback(move |odds: f64| Msg::Odds(idx, odds))}

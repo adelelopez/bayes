@@ -117,6 +117,14 @@ impl Component for LabelComponent {
         let onblur = ctx.link().callback(|_: FocusEvent| Msg::Blur);
         let onclick_edit = ctx.link().callback(|_: MouseEvent| Msg::EditMode);
         let onclick_delete = ctx.link().callback(|_: MouseEvent| Msg::Delete);
+        let onkeydown = ctx.link().callback(|e: KeyboardEvent| {
+            if e.key() == "Enter" {
+                e.prevent_default();
+                Msg::Blur
+            } else {
+                Msg::EditMode
+            }
+        });
 
         let value = self.value.clone();
 
@@ -145,6 +153,7 @@ impl Component for LabelComponent {
                                 value={value.clone()}
                                 oninput={oninput}
                                 onblur={onblur}
+                                onkeydown={onkeydown}
                                 onfocus={ctx.link().callback(|_: FocusEvent| Msg::Focus)}
                                 ref={input_ref}
                             />
