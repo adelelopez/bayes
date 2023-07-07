@@ -4,7 +4,7 @@
 
 #### ⬅️ Drag sliders to adjust likelihoods.
 
-This calculator is for analyzing how observed evidence should effect your beliefs between different hypotheses.
+This calculator is for analyzing how observed evidence should effect your beliefs between different hypotheses. It does this by using [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem).
 
 
 1. Put in your prior odds for your hypotheses. 
