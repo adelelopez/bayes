@@ -30,6 +30,11 @@ body {
     font-family: 'Atkinson Hyperlegible', sans-serif;
 }
 
+.secret-footer {
+    text-align: center;
+    color: var(--background-color);
+}
+
 .menu a {
     color: var(--text-color);
     text-decoration: none;
@@ -299,7 +304,7 @@ label {
     top: 0;
     right: 0;
     padding: 0;
-    padding-right: 8px;
+    padding-right: 3px;
     padding-top: 7px;
     width: 30px;
     color: var(--text-color-faded);
