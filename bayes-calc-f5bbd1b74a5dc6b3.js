@@ -1,4 +1,4 @@
-import { writeToClipboard } from './snippets/bayes-calc-cc3a5ec8b88cdbde/inline0.js';
+import { writeToClipboard } from './snippets/bayes-calc-ebe933c9c6e1f754/inline0.js';
 
 let wasm;
 
@@ -216,11 +216,11 @@ function makeMutClosure(arg0, arg1, dtor, f) {
     return real;
 }
 function __wbg_adapter_22(arg0, arg1) {
-    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__hddc333fc6f64958a(arg0, arg1);
+    wasm._dyn_core__ops__function__FnMut_____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2cdb513aae219a3e(arg0, arg1);
 }
 
 function __wbg_adapter_25(arg0, arg1, arg2) {
-    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h2699acfe88a3194e(arg0, arg1, addHeapObject(arg2));
+    wasm._dyn_core__ops__function__FnMut__A____Output___R_as_wasm_bindgen__closure__WasmClosure___describe__invoke__h438c2ce772ea1f62(arg0, arg1, addHeapObject(arg2));
 }
 
 function makeClosure(arg0, arg1, dtor, f) {
@@ -326,14 +326,14 @@ function __wbg_get_imports() {
         const ret = false;
         return ret;
     };
-    imports.wbg.__wbg_crush_d4749bd8d25ebd74 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbg_crush_e996aed562773067 = function(arg0, arg1, arg2) {
         const ret = JSONCrush.crush(getStringFromWasm0(arg1, arg2));
         const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
         getInt32Memory0()[arg0 / 4 + 1] = len1;
         getInt32Memory0()[arg0 / 4 + 0] = ptr1;
     };
-    imports.wbg.__wbg_uncrush_27dec1442700a393 = function(arg0, arg1, arg2) {
+    imports.wbg.__wbg_uncrush_3cd886701c367bfd = function(arg0, arg1, arg2) {
         const ret = JSONCrush.uncrush(getStringFromWasm0(arg1, arg2));
         const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len1 = WASM_VECTOR_LEN;
@@ -348,7 +348,7 @@ function __wbg_get_imports() {
         getInt32Memory0()[arg0 / 4 + 1] = len1;
         getInt32Memory0()[arg0 / 4 + 0] = ptr1;
     };
-    imports.wbg.__wbg_writeToClipboard_e195379e5456ff6a = function(arg0, arg1) {
+    imports.wbg.__wbg_writeToClipboard_874ad6dd08464636 = function(arg0, arg1) {
         const ret = writeToClipboard(getStringFromWasm0(arg0, arg1));
         return addHeapObject(ret);
     };
@@ -879,11 +879,11 @@ function __wbg_get_imports() {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbindgen_closure_wrapper247 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 30, __wbg_adapter_22);
+        const ret = makeMutClosure(arg0, arg1, 31, __wbg_adapter_22);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper249 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 30, __wbg_adapter_25);
+    imports.wbg.__wbindgen_closure_wrapper248 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 31, __wbg_adapter_25);
         return addHeapObject(ret);
     };
     imports.wbg.__wbindgen_closure_wrapper2134 = function(arg0, arg1, arg2) {
@@ -934,7 +934,7 @@ async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
     if (typeof input === 'undefined') {
-        input = new URL('bayes-calc-df14fb8590cb5c30_bg.wasm', import.meta.url);
+        input = new URL('bayes-calc-f5bbd1b74a5dc6b3_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
