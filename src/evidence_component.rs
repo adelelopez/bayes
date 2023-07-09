@@ -59,10 +59,7 @@ impl Component for EvidenceComponent {
     fn create(ctx: &yew::Context<Self>) -> Self {
         Self {
             evidence: AttrValue::from(ctx.props().label.clone()),
-            bayes_factors: normalize(ctx.props().likelihoods.clone())
-                .iter()
-                .map(|x| (x / (1.0 - x)).log(10.0))
-                .collect(),
+            bayes_factors: log_odds_in_db(normalize(ctx.props().likelihoods.clone())),
             likelihoods: ctx.props().likelihoods.clone(),
         }
     }
