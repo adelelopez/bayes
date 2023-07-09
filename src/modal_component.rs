@@ -108,7 +108,9 @@ impl Component for ModalComponent {
                 <div class="modal">
                 <div class="modal-content">
                     <span class="close-button" onclick={ctx.link().callback(|_| Msg::ToggleModal)}>{ "✕" }</span>
-                    {node}
+                    <article>
+                        {node}
+                    </article>
                     // <button onclick={ctx.link().callback(|_| Msg::PrevFile)}>{ "Prev" }</button>
                     // <button onclick={ctx.link().callback(|_| Msg::NextFile)}>{ "Next" }</button>
                 </div>
