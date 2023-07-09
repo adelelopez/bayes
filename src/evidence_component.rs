@@ -142,15 +142,32 @@ impl Component for EvidenceComponent {
             </div>
          });
 
-        // let display_log_odds = ctx.props().hypotheses.iter().enumerate().map(move |hypothesis|
-        //     html!{
-        //         <div class= {format!("e{idx}", idx=hypothesis.0)}>
-        //         <b>
-        //         { format_num::format_num!("+.1f", self.bayes_factors.clone()[hypothesis.0])}{" db"}
-        //         </b>
-        //         </div>
-        //     });
+        let (max_index, _) = self.bayes_factors.iter().enumerate().fold(
+            (Some(0), Some(f64::NEG_INFINITY)),
+            |(max_idx, max_val), (idx, &val)| match val.partial_cmp(&max_val.unwrap()) {
+                Some(std::cmp::Ordering::Greater) => (Some(idx), Some(val)),
+                Some(std::cmp::Ordering::Equal) => (None, Some(val)),
+                _ => (max_idx, max_val),
+            },
+        );
 
+        let display_log_odds = if let Some(max_idx) = max_index {
+            html! {
+                <div class={format!("e{idx}", idx=ctx.props().color[max_idx])}>
+                <b>
+                {format_num::format_num!("+.1f", self.bayes_factors[max_idx])}{" db"}
+                </b>
+                </div>
+            }
+        } else {
+            html! {
+                <div class="eblank">
+                <b>
+                {"0 db"}
+                </b>
+                </div>
+            }
+        };
         let col_str = "200px ".repeat(10);
         html! {
             <div class="evidence-item">
@@ -162,9 +179,10 @@ impl Component for EvidenceComponent {
                 onchange={&onchange_label}
                 deleteable={ctx.props().last}
                 />
-            //    <div class="log-odds">
-            //    {for display_log_odds}
-            //    </div>
+                <div class="log-odds mobile">
+                {display_log_odds.clone()}
+                </div>
+
                 </div>
             </div>
 
@@ -176,6 +194,9 @@ impl Component for EvidenceComponent {
             </div>
             </div>
 
+            <div class="log-odds">
+            {display_log_odds}
+            </div>
 
             <div class="after-bar" style={format!("width:{}px",200*ctx.props().hypotheses.len())}>
             <div class="bart">

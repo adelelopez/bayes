@@ -78,6 +78,7 @@ pub fn parse_markdown(content: &str) -> Result<BayesData, MarkdownParseError> {
                     evidence.push(hypothesis.trim_start_matches('#').trim().to_string());
                     likelihoods.push(Vec::new());
                 } else {
+                    // TODO: multiplying by 0.01 reduces the amount of precision that can be saved...
                     let likelihood = 0.01 * f64::from_str(value.trim_end_matches('%'))?;
                     likelihoods.last_mut().unwrap().push(likelihood);
                 }

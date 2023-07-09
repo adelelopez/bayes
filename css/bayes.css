@@ -18,7 +18,7 @@
     --bayes-3-discard: #af9fdb66;
     --bayes-4: #a4d2b9;
     --bayes-4-discard: #a4d2b966;
-    --bayes-2-high-contrast: #eacd31;
+    --bayes-2-high-contrast: #eac531;
     --label-background: rgb(255, 244, 231);
     --triangle-color: #557;
 }
@@ -40,11 +40,12 @@ body {
     text-decoration: none;
     /* padding-bottom: 11px; */
     font-size: 1.9rem;
-    letter-spacing: -0.8px;
+    letter-spacing: -0.2px;
 }
 
 .title {
     padding-bottom: 3px;
+    text-shadow: 0.5px 0px, -0.4px 0px;
 }
 
 .container {
@@ -424,15 +425,24 @@ input.label-input {
     width: 80%;
 }
 
-
-
 /* Log Odds */
 .log-odds {
+    display: none;
+}
+
+.len-2 .log-odds {
+    display: inline-flex;
+    top: calc(50% - 10px);
+    top: 5px;
     font-size: 0.8rem;
-    position: absolute;
-    right: 5px;
+    font-weight: bold;
+    position: relative;
+    left: 8px;
     text-align: right;
-    top: 2px;
+}
+
+.len-2 .log-odds.mobile {
+    display: none;
 }
 
 /* Other Styles */
@@ -576,6 +586,10 @@ input.label-input {
     color:var(--bayes-4);
 }
 
+.eblank {
+    color:var(--text-color-faded);
+}
+
 /* Text Alignment */
 .hyp {
     display: flex;
@@ -686,7 +700,7 @@ input.label-input {
     margin: 20px;
     overflow-y: auto;
     padding: 20px;
-    line-height: 1.35em;
+    line-height: 1.3em;
 }
 
 .modal-content p {
@@ -757,7 +771,7 @@ button.copy-button {
 
 .bart {
     display: flex;
-    margin-top: 4px;
+    margin-top: 4.3px;
     position: relative;
     width: 100%;
     height: 10px;
@@ -952,14 +966,6 @@ input[type=range]::-webkit-slider-thumb {
 }
 
 
-/* Log Odds */
-.log-odds {
-    font-size: 0.8rem;
-    position: absolute;
-    right: 5px;
-    text-align: right;
-    top: 2px;
-}
 
 @media (max-width: 1200px) {
     .container {
@@ -1002,7 +1008,10 @@ input[type=range]::-webkit-slider-thumb {
     .len-0 button.add-evidence {
         width: 400px;
     }
-
+    
+    .len-1 button.add-evidence {
+        width: 400px;
+    }
 
     .main {
         display: flex;
@@ -1069,6 +1078,10 @@ input[type=range]::-webkit-slider-thumb {
         padding-bottom: 0px;
         margin-top: 5px;
     }
+    .len-2 .evidence {
+        padding-right: 50px;
+    }
+
 
     .center {
         display: flex;
@@ -1127,6 +1140,18 @@ input[type=range]::-webkit-slider-thumb {
     .after-bar, .center {
         width: 100% !important;
     }
+
+    .len-2 .log-odds {
+        display: none;
+    }
+
+    .len-2 .log-odds.mobile {
+        display: inline;
+        position: absolute;
+        right: 30px;
+        top: 10px;
+        text-align: right;
+    }
 }
 
 
@@ -1144,6 +1169,7 @@ input[type=range]::-webkit-slider-thumb {
         --bayes-1-discard: #436e9c66;
         --bayes-2: #b8a077;
         --bayes-2-discard: #b8a07766;
+        --bayes-2-high-contrast:  #b8a077;
         --bayes-3: #669db7;
         --bayes-3: #756ea8;
         --bayes-3-discard: #756ea866;

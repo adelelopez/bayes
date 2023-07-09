@@ -327,9 +327,9 @@ impl Component for BayesComponent {
 
         html! {
             <div class={format!("container len-{}", hypotheses.len())} onmousemove={onmousemove}>
-                <div class="menu">
+                <nav class="menu">
                     <div class="title">
-                    <b><a href="">{"bayescalc.io"}</a></b>
+                    <a href="">{"bayescalc.io"}</a>
                     </div>
                     <button class="clear-session" onclick={onclick_help}>{"Help"}</button>
                     <button class="clear-session" onclick={onclick_clear}>{"Clear"}</button>
@@ -349,7 +349,7 @@ impl Component for BayesComponent {
                     } else {
                         html!{}
                     }}
-                </div>
+                </nav>
 
                 <ModalComponent
                 is_open={self.prefs.is_modal_open}
